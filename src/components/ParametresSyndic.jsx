@@ -62,27 +62,27 @@ function ParametresSyndic() {
   }
 
   return (
-    <section className="w-full rounded-2xl border border-[#aa3bff]/20 bg-white p-6 shadow-sm">
-      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
+    <section className="w-full rounded-2xl border border-[#059669]/20 bg-white p-6 shadow-sm">
+      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
         Paramètres syndic
       </p>
-      <h2 className="mt-2 text-2xl font-bold text-[#2e0f44]">
+      <h2 className="mt-2 text-2xl font-bold text-[#064E3B]">
         Changer le mot de passe
       </h2>
-      <p className="mt-2 text-sm text-slate-500">
+      <p className="mt-2 text-sm text-[#064E3B]/70">
         Ce mot de passe est enregistré localement sur cet appareil.
       </p>
 
       <form className="mt-6 grid gap-5 lg:grid-cols-3" onSubmit={handleSubmit}>
         <div>
           <label
-            className="mb-2 block text-sm font-medium text-slate-700"
+            className="mb-2 block text-sm font-medium text-[#064E3B]/80"
             htmlFor="ancien-mot-de-passe"
           >
             Ancien mot de passe
           </label>
           <input
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
+            className="w-full rounded-xl border border-[#A7F3D0] px-4 py-3 text-sm outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
             id="ancien-mot-de-passe"
             onChange={(event) =>
               updateField('ancienMotDePasse', event.target.value)
@@ -95,13 +95,13 @@ function ParametresSyndic() {
 
         <div>
           <label
-            className="mb-2 block text-sm font-medium text-slate-700"
+            className="mb-2 block text-sm font-medium text-[#064E3B]/80"
             htmlFor="nouveau-mot-de-passe"
           >
             Nouveau mot de passe
           </label>
           <input
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
+            className="w-full rounded-xl border border-[#A7F3D0] px-4 py-3 text-sm outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
             id="nouveau-mot-de-passe"
             minLength="6"
             onChange={(event) =>
@@ -115,13 +115,13 @@ function ParametresSyndic() {
 
         <div>
           <label
-            className="mb-2 block text-sm font-medium text-slate-700"
+            className="mb-2 block text-sm font-medium text-[#064E3B]/80"
             htmlFor="confirmation-mot-de-passe"
           >
             Confirmer le nouveau mot de passe
           </label>
           <input
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
+            className="w-full rounded-xl border border-[#A7F3D0] px-4 py-3 text-sm outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
             id="confirmation-mot-de-passe"
             minLength="6"
             onChange={(event) =>
@@ -147,7 +147,7 @@ function ParametresSyndic() {
           ) : null}
 
           <button
-            className="rounded-xl bg-[#aa3bff] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#922ee0] focus:outline-none focus:ring-4 focus:ring-[#aa3bff]/30"
+            className="rounded-xl bg-[#059669] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#047857] focus:outline-none focus:ring-4 focus:ring-[#059669]/30"
             type="submit"
           >
             Changer le mot de passe

@@ -16,9 +16,9 @@ import {
 const months = getCotisationPeriodMonths()
 
 const statusStyles = {
-  paye: 'bg-emerald-500 text-white ring-emerald-100',
-  impaye: 'bg-red-500 text-white ring-red-100',
-  futur: 'bg-slate-200 text-transparent ring-slate-100',
+  paye: 'bg-[#22C55E] text-white ring-[#BBF7D0]',
+  impaye: 'bg-[#DC2626] text-white ring-red-100',
+  futur: 'bg-[#D1D5DB] text-transparent ring-slate-100',
 }
 
 const statusLabels = {
@@ -211,22 +211,22 @@ function TableauCotisations() {
 
   return (
     <section className="w-full">
-      <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-[#aa3bff]/20 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
+      <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-[#059669]/20 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
             Cotisations Mai 2026 - Avril 2027
           </p>
-          <h2 className="mt-2 text-2xl font-bold text-slate-950">
+          <h2 className="mt-2 text-2xl font-bold text-[#064E3B]">
             Suivi mensuel des paiements
           </h2>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-[#064E3B]/70">
             Cotisation mensuelle : {MONTANT_COTISATION} {DEVISE}.
             Connectez-vous avec l'accès Syndic pour modifier les statuts payés
             ou impayés.
           </p>
         </div>
 
-        <div className="rounded-full bg-[#aa3bff]/10 px-4 py-3 text-sm font-semibold text-[#2e0f44]">
+        <div className="rounded-full bg-[#059669]/10 px-4 py-3 text-sm font-semibold text-[#064E3B]">
           Accès Syndic {isSyndic ? 'activé' : 'désactivé'}
         </div>
       </div>
@@ -244,13 +244,13 @@ function TableauCotisations() {
       ) : null}
 
       {loading ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+        <div className="rounded-2xl border border-[#A7F3D0] bg-white p-6 text-sm text-[#064E3B]/70 shadow-sm">
           Chargement des résidents...
         </div>
       ) : null}
 
       {!loading && !error && residents.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+        <div className="rounded-2xl border border-[#A7F3D0] bg-white p-6 text-sm text-[#064E3B]/70 shadow-sm">
           Aucun résident trouvé dans Firestore.
         </div>
       ) : null}
@@ -259,40 +259,40 @@ function TableauCotisations() {
         <>
           <ResumeCotisations cotisations={cotisations} residents={residents} />
 
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-[#A7F3D0] bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="min-w-full border-collapse text-left text-sm">
-                <thead className="bg-[#2e0f44] text-white">
+                <thead className="bg-[#059669] text-white">
                   <tr>
-                    <th className="min-w-56 px-5 py-4 font-semibold">Appartement</th>
+                    <th className="min-w-44 px-3 py-3 font-semibold md:min-w-56 md:px-5 md:py-4">Appartement</th>
                     {months.map((month) => (
                       <th
-                        className="px-4 py-4 text-center font-semibold"
+                        className="px-2 py-3 text-center font-semibold md:px-4 md:py-4"
                         key={month.key}
                       >
                         {month.label}
                       </th>
                     ))}
-                    <th className="min-w-40 bg-slate-100 px-5 py-4 text-center font-semibold text-[#2e0f44]">
+                    <th className="min-w-32 bg-[#059669] px-3 py-3 text-center font-semibold text-white md:min-w-40 md:px-5 md:py-4">
                       Total payé
                     </th>
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[#A7F3D0]/50">
                   {residents.map((resident) => {
                     const paidCount = getPaidCountForResident(resident.id)
 
                     return (
-                      <tr className="hover:bg-slate-50" key={resident.id}>
-                        <th className="px-5 py-4 text-left font-medium text-slate-900">
+                      <tr className="odd:bg-white even:bg-[#F0FDF4] hover:bg-[#A7F3D0]/25" key={resident.id}>
+                        <th className="px-3 py-3 text-left font-medium text-[#064E3B] md:px-5 md:py-4">
                           <button
-                            className="rounded-xl text-left transition hover:text-[#aa3bff] focus:outline-none focus:ring-4 focus:ring-[#aa3bff]/20"
+                            className="rounded-xl text-left transition hover:text-[#059669] focus:outline-none focus:ring-4 focus:ring-[#059669]/20"
                             onClick={() => openResidentHistory(resident)}
                             type="button"
                           >
                             <span className="block">{resident.appartement}</span>
-                            <span className="mt-1 block text-xs font-normal text-slate-500">
+                            <span className="mt-1 block text-[11px] font-normal text-[#064E3B]/70 md:text-xs">
                               {resident.nom}
                             </span>
                           </button>
@@ -314,12 +314,12 @@ function TableauCotisations() {
                           const isUpdating = updatingPaymentId === paymentDocumentId
 
                           return (
-                            <td className="px-4 py-4 text-center" key={month.key}>
+                            <td className="px-2 py-3 text-center md:px-4 md:py-4" key={month.key}>
                               <button
                                 aria-label={`${resident.nom}, ${month.label} : cotisation ${statusLabels[status]}`}
                                 className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-lg font-bold ring-4 transition ${statusStyles[status]} ${
                                   isInteractive && !isUpdating
-                                    ? 'cursor-pointer hover:scale-110 focus:outline-none focus:ring-[#aa3bff]/30'
+                                    ? 'cursor-pointer hover:scale-110 focus:outline-none focus:ring-[#059669]/30'
                                     : 'cursor-default opacity-80'
                                 }`}
                                 disabled={!isInteractive || isUpdating}
@@ -334,7 +334,7 @@ function TableauCotisations() {
                           )
                         })}
 
-                        <td className="bg-slate-50 px-5 py-4 text-center font-semibold text-slate-900">
+                        <td className="bg-[#F0FDF4] px-3 py-3 text-center text-xs font-semibold text-[#064E3B] md:px-5 md:py-4 md:text-sm">
                           {paidCount} mois - {paidCount * MONTANT_COTISATION}{' '}
                           {DEVISE}
                         </td>
@@ -344,8 +344,8 @@ function TableauCotisations() {
                 </tbody>
 
                 <tfoot>
-                  <tr className="border-t border-slate-200 bg-slate-50">
-                    <th className="px-5 py-4 text-left font-bold text-slate-900">
+                  <tr className="border-t border-[#A7F3D0] bg-[#F0FDF4]">
+                    <th className="px-3 py-3 text-left font-bold text-[#064E3B] md:px-5 md:py-4">
                       Total perçu
                     </th>
                     {months.map((month) => {
@@ -353,14 +353,14 @@ function TableauCotisations() {
 
                       return (
                         <td
-                          className="px-4 py-4 text-center text-sm font-semibold text-slate-900"
+                          className="px-2 py-3 text-center text-xs font-semibold text-[#064E3B] md:px-4 md:py-4 md:text-sm"
                           key={month.key}
                         >
                           {paidCount * MONTANT_COTISATION}
                         </td>
                       )
                     })}
-                    <td className="bg-slate-100 px-5 py-4 text-center font-bold text-[#2e0f44]">
+                    <td className="bg-[#A7F3D0] px-3 py-3 text-center text-xs font-bold text-[#064E3B] md:px-5 md:py-4 md:text-sm">
                       {months.reduce(
                         (total, month) => total + getPaidCountForMonth(month),
                         0,
@@ -375,17 +375,17 @@ function TableauCotisations() {
         </>
       ) : null}
 
-      <div className="mt-5 flex flex-wrap gap-4 text-sm text-slate-600">
+      <div className="mt-5 flex flex-wrap gap-4 text-sm text-[#064E3B]/75">
         <span className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded-full bg-emerald-500" />
+          <span className="h-4 w-4 rounded-full bg-[#22C55E]" />
           Payé
         </span>
         <span className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded-full bg-red-500" />
+          <span className="h-4 w-4 rounded-full bg-[#DC2626]" />
           Impayé
         </span>
         <span className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded-full bg-slate-200" />
+          <span className="h-4 w-4 rounded-full bg-[#D1D5DB]" />
           Futur
         </span>
       </div>
@@ -402,24 +402,24 @@ function TableauCotisations() {
             className="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex flex-col gap-4 border-b border-slate-100 pb-5 md:flex-row md:items-start md:justify-between">
+            <div className="flex flex-col gap-4 border-b border-[#A7F3D0]/50 pb-5 md:flex-row md:items-start md:justify-between">
               <div>
-                <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
                   Historique résident
                 </p>
                 <h2
-                  className="mt-2 text-2xl font-bold text-[#2e0f44]"
+                  className="mt-2 text-2xl font-bold text-[#064E3B]"
                   id="resident-history-title"
                 >
                   {selectedResident.nom} - {selectedResident.appartement}
                 </h2>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-[#064E3B]/70">
                   Détail des cotisations de Mai 2026 à Avril 2027.
                 </p>
               </div>
 
               <button
-                className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+                className="rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#D1D5DB]"
                 onClick={closeResidentHistory}
                 type="button"
               >
@@ -428,12 +428,12 @@ function TableauCotisations() {
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-3">
-              <article className="rounded-xl bg-[#aa3bff]/10 p-4">
-                <p className="text-sm font-medium text-[#922ee0]">Total payé</p>
-                <p className="mt-2 text-2xl font-bold text-[#2e0f44]">
+              <article className="rounded-xl bg-[#059669]/10 p-4">
+                <p className="text-sm font-medium text-[#047857]">Total payé</p>
+                <p className="mt-2 text-2xl font-bold text-[#064E3B]">
                   {selectedPaidCount} mois sur {months.length}
                 </p>
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1 text-sm text-[#064E3B]/75">
                   = {selectedPaidCount * MONTANT_COTISATION} {DEVISE}
                 </p>
               </article>
@@ -470,20 +470,20 @@ function TableauCotisations() {
 
             {isSyndic ? (
               <form
-                className="mt-6 rounded-2xl border border-[#aa3bff]/20 bg-slate-50 p-5"
+                className="mt-6 rounded-2xl border border-[#059669]/20 bg-[#F0FDF4] p-5"
                 onSubmit={handleResidentSubmit}
               >
                 <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#aa3bff]">
+                    <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#059669]">
                       Édition syndic
                     </p>
-                    <h3 className="mt-1 text-lg font-bold text-[#2e0f44]">
+                    <h3 className="mt-1 text-lg font-bold text-[#064E3B]">
                       Modifier les coordonnées
                     </h3>
                   </div>
                   <button
-                    className="rounded-xl bg-[#aa3bff] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#922ee0] focus:outline-none focus:ring-4 focus:ring-[#aa3bff]/30 disabled:cursor-not-allowed disabled:opacity-70"
+                    className="rounded-xl bg-[#059669] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#047857] focus:outline-none focus:ring-4 focus:ring-[#059669]/30 disabled:cursor-not-allowed disabled:opacity-70"
                     disabled={residentSaving}
                     type="submit"
                   >
@@ -494,13 +494,13 @@ function TableauCotisations() {
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
                   <div>
                     <label
-                      className="mb-2 block text-sm font-medium text-slate-700"
+                      className="mb-2 block text-sm font-medium text-[#064E3B]/80"
                       htmlFor="resident-nom"
                     >
                       Nom
                     </label>
                     <input
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
+                      className="w-full rounded-xl border border-[#A7F3D0] px-4 py-3 text-sm outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
                       id="resident-nom"
                       onChange={(event) =>
                         updateResidentField('nom', event.target.value)
@@ -513,13 +513,13 @@ function TableauCotisations() {
 
                   <div>
                     <label
-                      className="mb-2 block text-sm font-medium text-slate-700"
+                      className="mb-2 block text-sm font-medium text-[#064E3B]/80"
                       htmlFor="resident-telephone"
                     >
                       Téléphone
                     </label>
                     <input
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
+                      className="w-full rounded-xl border border-[#A7F3D0] px-4 py-3 text-sm outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
                       id="resident-telephone"
                       onChange={(event) =>
                         updateResidentField('telephone', event.target.value)
@@ -531,13 +531,13 @@ function TableauCotisations() {
 
                   <div>
                     <label
-                      className="mb-2 block text-sm font-medium text-slate-700"
+                      className="mb-2 block text-sm font-medium text-[#064E3B]/80"
                       htmlFor="resident-email"
                     >
                       Email
                     </label>
                     <input
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
+                      className="w-full rounded-xl border border-[#A7F3D0] px-4 py-3 text-sm outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
                       id="resident-email"
                       onChange={(event) =>
                         updateResidentField('email', event.target.value)
@@ -562,10 +562,10 @@ function TableauCotisations() {
               </form>
             ) : null}
 
-            <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200">
+            <div className="mt-6 overflow-hidden rounded-2xl border border-[#A7F3D0]">
               <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse text-left text-sm">
-                  <thead className="bg-slate-50 text-slate-600">
+                  <thead className="bg-[#F0FDF4] text-[#064E3B]/75">
                     <tr>
                       <th className="px-5 py-4 font-semibold">Mois</th>
                       <th className="px-5 py-4 text-center font-semibold">
@@ -574,7 +574,7 @@ function TableauCotisations() {
                       <th className="px-5 py-4 font-semibold">Détail</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-[#A7F3D0]/50">
                     {months.map((month) => {
                       const status = getCotisationStatus(
                         cotisations,
@@ -595,7 +595,7 @@ function TableauCotisations() {
                           className={status === 'impaye' ? 'bg-red-50/60' : ''}
                           key={month.key}
                         >
-                          <td className="whitespace-nowrap px-5 py-4 font-medium text-slate-900">
+                          <td className="whitespace-nowrap px-5 py-4 font-medium text-[#064E3B]">
                             {month.label}
                           </td>
                           <td className="px-5 py-4 text-center">
@@ -603,7 +603,7 @@ function TableauCotisations() {
                               aria-label={`${selectedResident.nom}, ${month.label} : cotisation ${statusLabels[status]}`}
                               className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-lg font-bold ring-4 transition ${statusStyles[status]} ${
                                 isInteractive && !isUpdating
-                                  ? 'cursor-pointer hover:scale-110 focus:outline-none focus:ring-[#aa3bff]/30'
+                                  ? 'cursor-pointer hover:scale-110 focus:outline-none focus:ring-[#059669]/30'
                                   : 'cursor-default opacity-80'
                               }`}
                               disabled={!isInteractive || isUpdating}
@@ -615,7 +615,7 @@ function TableauCotisations() {
                               {statusSymbols[status]}
                             </button>
                           </td>
-                          <td className="px-5 py-4 capitalize text-slate-600">
+                          <td className="px-5 py-4 capitalize text-[#064E3B]/75">
                             {statusLabels[status]}
                           </td>
                         </tr>

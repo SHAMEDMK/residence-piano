@@ -10,7 +10,7 @@ function ResumeCotisations({ cotisations, residents }) {
 
   if (!currentMonth) {
     return (
-      <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+      <div className="mb-8 rounded-2xl border border-[#A7F3D0] bg-white p-6 text-sm text-[#064E3B]/70 shadow-sm">
         Le mois en cours n'est pas dans la période de cotisations affichée.
       </div>
     )

@@ -11,7 +11,7 @@ const nextMonthFormatter = new Intl.DateTimeFormat('fr-FR', {
 
 function CardIcon({ children }) {
   return (
-    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#aa3bff]/10 text-[#aa3bff]">
+    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#059669]/10 text-[#059669]">
       {children}
     </div>
   )
@@ -156,61 +156,61 @@ function Accueil({
 
   return (
     <section className="w-full space-y-8">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm md:p-10">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
+      <div className="rounded-2xl border border-[#A7F3D0] bg-white p-8 shadow-sm md:p-10">
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
           Gestion du syndic
         </p>
-        <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">
+        <h2 className="mt-3 text-4xl font-bold tracking-tight text-[#064E3B] md:text-6xl">
           Résidence Piano
         </h2>
-        <p className="mt-3 text-xl font-semibold text-[#aa3bff]">
+        <p className="mt-3 text-xl font-semibold text-[#059669]">
           Gestion du syndic
         </p>
-        <p className="mt-5 max-w-2xl text-slate-600">
+        <p className="mt-5 max-w-2xl text-[#064E3B]/80">
           Bonjour, bienvenue sur l'espace syndic de la Résidence Piano.
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
-        <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
           <CardIcon>
             <WalletIcon />
           </CardIcon>
-          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#aa3bff]">
+          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
             Caisse du syndic
           </p>
-          <p className="mt-4 text-3xl font-bold text-[#2e0f44]">
+          <p className="mt-4 text-3xl font-bold text-[#064E3B]">
             {cashError
               ? 'Erreur'
               : cashLoading
                 ? 'Chargement...'
                 : formatMontant(solde)}
           </p>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-[#064E3B]/70">
             Solde après cotisations payées et dépenses enregistrées.
           </p>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
           <CardIcon>
             <CalendarIcon />
           </CardIcon>
-          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#aa3bff]">
+          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
             Prochaine échéance
           </p>
-          <p className="mt-4 text-2xl font-bold text-slate-950">
+          <p className="mt-4 text-2xl font-bold text-[#064E3B]">
             {getNextPaymentDeadline()}
           </p>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-[#064E3B]/70">
             Date limite de paiement de la prochaine cotisation.
           </p>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
           <CardIcon>
             <ReceiptIcon />
           </CardIcon>
-          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#aa3bff]">
+          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
             Dernière dépense
           </p>
           {depensesError ? (
@@ -218,45 +218,45 @@ function Accueil({
               Impossible de charger les dépenses.
             </p>
           ) : depensesLoading ? (
-            <p className="mt-4 text-sm text-slate-500">Chargement...</p>
+            <p className="mt-4 text-sm text-[#064E3B]/70">Chargement...</p>
           ) : depenses[0] ? (
             <>
-              <h3 className="mt-4 text-lg font-bold text-slate-950">
+              <h3 className="mt-4 text-lg font-bold text-[#064E3B]">
                 {depenses[0].motif}
               </h3>
-              <p className="mt-2 text-2xl font-bold text-[#2e0f44]">
+              <p className="mt-2 text-2xl font-bold text-[#064E3B]">
                 {formatMontant(depenses[0].montant)}
               </p>
             </>
           ) : (
-            <p className="mt-4 text-sm text-slate-500">Aucune dépense enregistrée.</p>
+            <p className="mt-4 text-sm text-[#064E3B]/70">Aucune dépense enregistrée.</p>
           )}
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
           <CardIcon>
             <AlertIcon />
           </CardIcon>
-          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#aa3bff]">
+          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
             Rappel cotisations
           </p>
-          <p className="mt-4 text-3xl font-bold text-slate-950">
+          <p className="mt-4 text-3xl font-bold text-[#064E3B]">
             {reminderError
               ? 'Erreur'
               : reminderLoading
                 ? 'Chargement...'
                 : residentsWithUnpaidCotisations}
           </p>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-[#064E3B]/70">
             Appartement(s) avec au moins un mois impayé.
           </p>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
           <CardIcon>
             <ToolsIcon />
           </CardIcon>
-          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#aa3bff]">
+          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
             Prochaine intervention
           </p>
           {interventionsError ? (
@@ -264,21 +264,21 @@ function Accueil({
               Impossible de charger le calendrier.
             </p>
           ) : interventionsLoading ? (
-            <p className="mt-4 text-sm text-slate-500">Chargement...</p>
+            <p className="mt-4 text-sm text-[#064E3B]/70">Chargement...</p>
           ) : nextIntervention ? (
             <>
-              <h3 className="mt-4 text-lg font-bold text-slate-950">
+              <h3 className="mt-4 text-lg font-bold text-[#064E3B]">
                 {nextIntervention.titre}
               </h3>
-              <p className="mt-2 text-sm font-semibold text-[#2e0f44]">
+              <p className="mt-2 text-sm font-semibold text-[#064E3B]">
                 {nextIntervention.date}
               </p>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-[#064E3B]/70">
                 {nextIntervention.type}
               </p>
             </>
           ) : (
-            <p className="mt-4 text-sm text-slate-500">
+            <p className="mt-4 text-sm text-[#064E3B]/70">
               Aucune intervention à venir.
             </p>
           )}

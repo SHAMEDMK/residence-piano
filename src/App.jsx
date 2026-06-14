@@ -20,6 +20,8 @@ import useSyndicMode from './hooks/useSyndicMode'
 
 function AppContent() {
   const [activePage, setActivePage] = useState('Accueil')
+  const [editingAnnonce, setEditingAnnonce] = useState(null)
+  const [editingDepense, setEditingDepense] = useState(null)
   const { isSyndic, theme } = useSyndicMode()
   const {
     annonces,
@@ -55,7 +57,11 @@ function AppContent() {
 
     if (activePage === 'Dépenses') {
       return (
-        <section className="grid w-full gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <section
+          className={`grid w-full gap-8 ${
+            isSyndic ? 'lg:grid-cols-[minmax(0,1fr)_360px]' : ''
+          }`}
+        >
           <JournalDepenses
             cotisations={cotisations}
             cotisationsError={cotisationsError}
@@ -63,14 +69,20 @@ function AppContent() {
             depenses={depenses}
             depensesError={depensesError}
             depensesLoading={depensesLoading}
+            isSyndic={isSyndic}
+            onDelete={(depenseId) => {
+              if (editingDepense?.id === depenseId) {
+                setEditingDepense(null)
+              }
+            }}
+            onEdit={setEditingDepense}
           />
           {isSyndic ? (
-            <AjoutDepense />
-          ) : (
-            <aside className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
-              Le formulaire d'ajout de dépense est réservé à l'accès Syndic.
-            </aside>
-          )}
+            <AjoutDepense
+              editingDepense={editingDepense}
+              onCancelEdit={() => setEditingDepense(null)}
+            />
+          ) : null}
         </section>
       )
     }
@@ -80,15 +92,12 @@ function AppContent() {
         <section className="w-full space-y-8">
           <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
                 Annonces
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-[#2e0f44]">
+              <h2 className="mt-2 text-2xl font-bold text-[#064E3B]">
                 Informations aux résidents
               </h2>
-              <p className="mt-2 text-sm text-slate-500">
-                Connectez-vous en accès Syndic depuis l'en-tête pour publier une annonce.
-              </p>
             </div>
           </div>
 
@@ -104,15 +113,27 @@ function AppContent() {
             </div>
           ) : null}
 
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <MurAnnonces annonces={annonces} />
+          <div
+            className={`grid gap-8 ${
+              isSyndic ? 'lg:grid-cols-[minmax(0,1fr)_360px]' : ''
+            }`}
+          >
+            <MurAnnonces
+              annonces={annonces}
+              isSyndic={isSyndic}
+              onDelete={(annonceId) => {
+                if (editingAnnonce?.id === annonceId) {
+                  setEditingAnnonce(null)
+                }
+              }}
+              onEdit={setEditingAnnonce}
+            />
             {isSyndic ? (
-              <AjoutAnnonce />
-            ) : (
-              <aside className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
-                Le formulaire de publication est réservé à l'accès Syndic.
-              </aside>
-            )}
+              <AjoutAnnonce
+                editingAnnonce={editingAnnonce}
+                onCancelEdit={() => setEditingAnnonce(null)}
+              />
+            ) : null}
           </div>
         </section>
       )
@@ -155,7 +176,7 @@ function AppContent() {
 
   return (
     <div
-      className="min-h-screen bg-slate-50 text-slate-900"
+      className="min-h-screen bg-[#F0FDF4] text-[#064E3B]"
       data-theme={theme}
     >
       <Header activePage={activePage} onNavigate={setActivePage} />

@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="border-t border-slate-200 py-6 text-center text-xs text-slate-400">
+    <footer className="border-t border-[#059669] bg-[#059669] py-6 text-center text-xs font-medium text-white">
       Résidence Piano © 2026
     </footer>
   )
