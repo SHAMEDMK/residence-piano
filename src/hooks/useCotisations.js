@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { collection, onSnapshot, query, where } from 'firebase/firestore'
 import { db } from '../firebase'
-import { getCurrentCotisationYear } from '../utils/finance'
+import { getCotisationPeriodYears } from '../utils/finance'
+
+const defaultCotisationYears = getCotisationPeriodYears()
 
 function normalizeCotisation(documentSnapshot) {
   const data = documentSnapshot.data()
@@ -15,14 +17,14 @@ function normalizeCotisation(documentSnapshot) {
   }
 }
 
-function useCotisations(annee = getCurrentCotisationYear()) {
+function useCotisations(annees = defaultCotisationYears) {
   const [cotisations, setCotisations] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     const cotisationsRef = collection(db, 'cotisations')
-    const cotisationsQuery = query(cotisationsRef, where('annee', '==', annee))
+    const cotisationsQuery = query(cotisationsRef, where('annee', 'in', annees))
 
     const unsubscribe = onSnapshot(
       cotisationsQuery,
@@ -35,6 +37,10 @@ function useCotisations(annee = getCurrentCotisationYear()) {
 
             if (residentDiff !== 0) {
               return residentDiff
+            }
+
+            if (cotisationA.annee !== cotisationB.annee) {
+              return cotisationA.annee - cotisationB.annee
             }
 
             return cotisationA.mois - cotisationB.mois
@@ -51,7 +57,7 @@ function useCotisations(annee = getCurrentCotisationYear()) {
     )
 
     return unsubscribe
-  }, [annee])
+  }, [annees])
 
   return { cotisations, loading, error }
 }

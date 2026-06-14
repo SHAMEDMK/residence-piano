@@ -2,13 +2,9 @@ import {
   calculateSolde,
   calculateTotalDepenses,
   countPaidCotisations,
+  formatMontant,
   MONTANT_COTISATION,
 } from '../utils/finance'
-
-const currencyFormatter = new Intl.NumberFormat('fr-FR', {
-  style: 'currency',
-  currency: 'EUR',
-})
 
 const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
   day: '2-digit',
@@ -37,7 +33,7 @@ function JournalDepenses({
       return 'Chargement...'
     }
 
-    return currencyFormatter.format(amount)
+    return formatMontant(amount)
   }
   const soldeError = cotisationsError ?? depensesError
   const soldeLoading = cotisationsLoading || depensesLoading
@@ -45,18 +41,18 @@ function JournalDepenses({
   return (
     <section className="w-full rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-100 p-6">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-indigo-600">
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
           Journal des dépenses
         </p>
-        <h2 className="mt-2 text-2xl font-bold text-indigo-950">
+        <h2 className="mt-2 text-2xl font-bold text-[#2e0f44]">
           Sorties d'argent de la copropriété
         </h2>
       </div>
 
       <div className="grid gap-4 border-b border-slate-100 p-6 md:grid-cols-3">
-        <div className="rounded-xl bg-indigo-50 p-4">
-          <p className="text-sm font-medium text-indigo-700">Cotisations encaissées</p>
-          <p className="mt-2 text-2xl font-bold text-indigo-950">
+        <div className="rounded-xl bg-[#aa3bff]/10 p-4">
+          <p className="text-sm font-medium text-[#922ee0]">Cotisations encaissées</p>
+          <p className="mt-2 text-2xl font-bold text-[#2e0f44]">
             {formatAmount(totalCotisations, cotisationsError, cotisationsLoading)}
           </p>
         </div>
@@ -107,7 +103,7 @@ function JournalDepenses({
                   {depense.motif}
                 </td>
                 <td className="whitespace-nowrap px-5 py-4 text-right font-semibold text-slate-900">
-                  {currencyFormatter.format(depense.montant)}
+                  {formatMontant(depense.montant)}
                 </td>
                 <td className="whitespace-nowrap px-5 py-4 text-slate-600">
                   {depense.payeur}
@@ -115,7 +111,7 @@ function JournalDepenses({
                 <td className="whitespace-nowrap px-5 py-4">
                   {depense.justificatif ? (
                     <a
-                      className="font-medium text-indigo-600 hover:text-indigo-800"
+                      className="font-medium text-[#aa3bff] hover:text-[#922ee0]"
                       href={depense.justificatif}
                       rel="noreferrer"
                       target="_blank"

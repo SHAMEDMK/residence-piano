@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Accueil from './components/Accueil'
 import AjoutAnnonce from './components/AjoutAnnonce'
 import AjoutDepense from './components/AjoutDepense'
+import Footer from './components/Footer'
 import Header from './components/Header'
 import JournalDepenses from './components/JournalDepenses'
 import MurAnnonces from './components/MurAnnonces'
@@ -62,12 +63,12 @@ function AppContent() {
     if (activePage === 'Annonces') {
       return (
         <section className="w-full space-y-8">
-          <div className="flex flex-col gap-4 rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-indigo-600">
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
                 Annonces
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-indigo-950">
+              <h2 className="mt-2 text-2xl font-bold text-[#2e0f44]">
                 Informations aux résidents
               </h2>
               <p className="mt-2 text-sm text-slate-500">
@@ -104,9 +105,6 @@ function AppContent() {
 
     return (
       <Accueil
-        annonces={annonces}
-        annoncesError={annoncesError}
-        annoncesLoading={annoncesLoading}
         cotisations={cotisations}
         cotisationsError={cotisationsError}
         cotisationsLoading={cotisationsLoading}
@@ -124,6 +122,7 @@ function AppContent() {
       <main className="mx-auto flex w-full max-w-7xl px-4 py-8 sm:px-6 lg:py-16">
         {renderPage()}
       </main>
+      <Footer />
     </div>
   )
 }

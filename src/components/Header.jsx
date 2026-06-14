@@ -7,13 +7,13 @@ function Header({ activePage, onNavigate }) {
   const { syndicMode, setSyndicMode } = useSyndicMode()
 
   return (
-    <header className="border-b border-indigo-100 bg-white shadow-sm">
+    <header className="border-b border-[#aa3bff]/20 bg-white shadow-sm">
       <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-6 xl:flex-row xl:items-center xl:justify-between">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-indigo-600">
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
             Espace syndic
           </p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-indigo-950 md:text-3xl">
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-[#2e0f44] md:text-3xl">
             Résidence Piano
           </h1>
         </div>
@@ -26,8 +26,8 @@ function Header({ activePage, onNavigate }) {
                   <button
                     className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                       activePage === item
-                        ? 'bg-indigo-600 text-white shadow-sm'
-                        : 'text-slate-700 hover:bg-indigo-50 hover:text-indigo-700'
+                        ? 'bg-[#aa3bff] text-white shadow-sm'
+                        : 'text-slate-700 hover:bg-[#aa3bff]/10 hover:text-[#922ee0]'
                     }`}
                     onClick={() => onNavigate(item)}
                     type="button"

@@ -41,11 +41,11 @@ function AjoutAnnonce() {
   }
 
   return (
-    <aside className="rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm">
-      <p className="text-sm font-medium uppercase tracking-[0.2em] text-indigo-600">
+    <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
         Nouvelle annonce
       </p>
-      <h2 className="mt-2 text-2xl font-bold text-indigo-950">
+      <h2 className="mt-2 text-2xl font-bold text-[#2e0f44]">
         Publier un message
       </h2>
 
@@ -64,7 +64,7 @@ function AjoutAnnonce() {
             Titre
           </label>
           <input
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
             id="titre-annonce"
             onChange={(event) => updateField('titre', event.target.value)}
             required
@@ -81,7 +81,7 @@ function AjoutAnnonce() {
             Contenu
           </label>
           <textarea
-            className="min-h-36 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+            className="min-h-36 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
             id="contenu-annonce"
             onChange={(event) => updateField('contenu', event.target.value)}
             required
@@ -90,7 +90,7 @@ function AjoutAnnonce() {
         </div>
 
         <button
-          className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200"
+          className="w-full rounded-xl bg-[#aa3bff] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#922ee0] focus:outline-none focus:ring-4 focus:ring-[#aa3bff]/30 disabled:cursor-not-allowed disabled:opacity-70"
           disabled={saving}
           type="submit"
         >

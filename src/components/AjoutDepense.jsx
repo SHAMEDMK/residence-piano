@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { addDoc, collection } from 'firebase/firestore'
 import { db } from '../firebase'
+import { DEVISE } from '../utils/finance'
 
 const initialFormValues = {
   motif: '',
@@ -62,11 +63,11 @@ function AjoutDepense() {
   }
 
   return (
-    <aside className="rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm">
-      <p className="text-sm font-medium uppercase tracking-[0.2em] text-indigo-600">
+    <aside className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
         Nouvelle sortie
       </p>
-      <h2 className="mt-2 text-2xl font-bold text-indigo-950">
+      <h2 className="mt-2 text-2xl font-bold text-[#2e0f44]">
         Ajouter une dépense
       </h2>
 
@@ -85,7 +86,7 @@ function AjoutDepense() {
             Motif
           </label>
           <input
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
             id="motif"
             onChange={(event) => updateField('motif', event.target.value)}
             required
@@ -99,18 +100,23 @@ function AjoutDepense() {
             className="mb-2 block text-sm font-medium text-slate-700"
             htmlFor="montant"
           >
-            Montant
+            Montant ({DEVISE})
           </label>
-          <input
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
-            id="montant"
-            min="0"
-            onChange={(event) => updateField('montant', event.target.value)}
-            required
-            step="0.01"
-            type="number"
-            value={formValues.montant}
-          />
+          <div className="flex overflow-hidden rounded-xl border border-slate-200 transition focus-within:border-[#aa3bff] focus-within:ring-4 focus-within:ring-[#aa3bff]/20">
+            <input
+              className="w-full px-4 py-3 text-sm outline-none"
+              id="montant"
+              min="0"
+              onChange={(event) => updateField('montant', event.target.value)}
+              required
+              step="0.01"
+              type="number"
+              value={formValues.montant}
+            />
+            <span className="flex items-center bg-slate-50 px-4 text-sm font-semibold text-slate-500">
+              {DEVISE}
+            </span>
+          </div>
         </div>
 
         <div>
@@ -121,7 +127,7 @@ function AjoutDepense() {
             Payeur
           </label>
           <input
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
             id="payeur"
             onChange={(event) => updateField('payeur', event.target.value)}
             required
@@ -138,7 +144,7 @@ function AjoutDepense() {
             Justificatif
           </label>
           <input
-            className="w-full rounded-xl border border-dashed border-slate-300 px-4 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100"
+            className="w-full rounded-xl border border-dashed border-slate-300 px-4 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-[#aa3bff]/10 file:px-4 file:py-2 file:text-sm file:font-medium file:text-[#922ee0] hover:file:bg-[#aa3bff]/20"
             id="justificatif"
             onChange={handleFileChange}
             type="file"
@@ -151,7 +157,7 @@ function AjoutDepense() {
         </div>
 
         <button
-          className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200"
+          className="w-full rounded-xl bg-[#aa3bff] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#922ee0] focus:outline-none focus:ring-4 focus:ring-[#aa3bff]/30 disabled:cursor-not-allowed disabled:opacity-70"
           disabled={saving}
           type="submit"
         >

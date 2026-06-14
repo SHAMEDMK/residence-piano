@@ -1,7 +1,54 @@
-export const MONTANT_COTISATION = 50
+export const MONTANT_COTISATION = 200
+export const DEVISE = 'DH'
+export const ANNEE_DEBUT = 2026
+export const MOIS_DEBUT = 5
+
+const amountFormatter = new Intl.NumberFormat('fr-FR', {
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 0,
+})
+
+export function formatMontant(amount) {
+  return `${amountFormatter.format(Number(amount))} ${DEVISE}`
+}
 
 export function getCurrentCotisationYear(referenceDate = new Date()) {
   return referenceDate.getFullYear()
+}
+
+export function getCotisationPeriodMonths() {
+  return Array.from({ length: 12 }, (_, index) => {
+    const monthIndex = MOIS_DEBUT - 1 + index
+    const mois = (monthIndex % 12) + 1
+    const annee = ANNEE_DEBUT + Math.floor(monthIndex / 12)
+    const date = new Date(annee, mois - 1, 1)
+    const monthLabel = new Intl.DateTimeFormat('fr-FR', {
+      month: 'long',
+    }).format(date)
+
+    return {
+      key: `${annee}-${mois}`,
+      mois,
+      annee,
+      label: `${monthLabel.charAt(0).toUpperCase()}${monthLabel.slice(1)} ${annee}`,
+    }
+  })
+}
+
+export function getCotisationPeriodYears() {
+  return [...new Set(getCotisationPeriodMonths().map((month) => month.annee))]
+}
+
+export function getCurrentCotisationMonth(referenceDate = new Date()) {
+  const currentMonth = referenceDate.getMonth() + 1
+  const currentYear = referenceDate.getFullYear()
+
+  return (
+    getCotisationPeriodMonths().find(
+      (periodMonth) =>
+        periodMonth.mois === currentMonth && periodMonth.annee === currentYear,
+    ) ?? null
+  )
 }
 
 export function getCotisationDocId(residentId, annee, mois) {
@@ -32,17 +79,35 @@ export function getCotisationStatus(cotisations, residentId, mois, annee) {
   return findCotisation(cotisations, residentId, mois, annee)?.statut ?? 'impaye'
 }
 
-export function countPaidCotisations(cotisations) {
-  return cotisations.filter((cotisation) => cotisation.statut === 'paye').length
+export function countPaidCotisations(
+  cotisations,
+  periodMonths = getCotisationPeriodMonths(),
+) {
+  return cotisations.filter(
+    (cotisation) =>
+      cotisation.statut === 'paye' &&
+      periodMonths.some(
+        (periodMonth) =>
+          periodMonth.mois === cotisation.mois &&
+          periodMonth.annee === cotisation.annee,
+      ),
+  ).length
 }
 
-export function countResidentsWithUnpaidCotisations(residents, cotisations, annee) {
-  const currentMonth = new Date().getMonth() + 1
-
+export function countResidentsWithUnpaidCotisations(
+  residents,
+  cotisations,
+  periodMonths = getCotisationPeriodMonths(),
+) {
   return residents.filter((resident) =>
-    Array.from({ length: currentMonth }, (_, index) => index + 1).some(
-      (mois) =>
-        getCotisationStatus(cotisations, resident.id, mois, annee) === 'impaye',
+    periodMonths.some(
+      (periodMonth) =>
+        getCotisationStatus(
+          cotisations,
+          resident.id,
+          periodMonth.mois,
+          periodMonth.annee,
+        ) === 'impaye',
     ),
   ).length
 }

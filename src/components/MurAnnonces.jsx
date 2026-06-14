@@ -8,10 +8,10 @@ function MurAnnonces({ annonces }) {
   return (
     <section className="w-full rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-100 p-6">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-indigo-600">
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#aa3bff]">
           Mur d'annonces
         </p>
-        <h2 className="mt-2 text-2xl font-bold text-indigo-950">
+        <h2 className="mt-2 text-2xl font-bold text-[#2e0f44]">
           Messages du syndic
         </h2>
       </div>
