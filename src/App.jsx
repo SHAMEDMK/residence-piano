@@ -4,6 +4,7 @@ import AjoutAnnonce from './components/AjoutAnnonce'
 import AjoutDepense from './components/AjoutDepense'
 import Calendrier from './components/Calendrier'
 import Contacts from './components/Contacts'
+import CotisationsExceptionnelles from './components/CotisationsExceptionnelles'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import JournalDepenses from './components/JournalDepenses'
@@ -14,6 +15,7 @@ import SyndicModeProvider from './context/SyndicModeProvider'
 import { seedResidents } from './data/seedResidents'
 import useAnnonces from './hooks/useAnnonces'
 import useCotisations from './hooks/useCotisations'
+import useCotisationsExceptionnelles from './hooks/useCotisationsExceptionnelles'
 import useDepenses from './hooks/useDepenses'
 import useInterventions from './hooks/useInterventions'
 import useSyndicMode from './hooks/useSyndicMode'
@@ -34,6 +36,11 @@ function AppContent() {
     error: cotisationsError,
   } = useCotisations()
   const {
+    cotisationsExceptionnelles,
+    loading: cotisationsExceptionnellesLoading,
+    error: cotisationsExceptionnellesError,
+  } = useCotisationsExceptionnelles()
+  const {
     depenses,
     loading: depensesLoading,
     error: depensesError,
@@ -53,6 +60,16 @@ function AppContent() {
   const renderPage = () => {
     if (activePage === 'Cotisations') {
       return <TableauCotisations />
+    }
+
+    if (activePage === 'Cotisations exceptionnelles') {
+      return (
+        <CotisationsExceptionnelles
+          cotisationsExceptionnelles={cotisationsExceptionnelles}
+          cotisationsExceptionnellesError={cotisationsExceptionnellesError}
+          cotisationsExceptionnellesLoading={cotisationsExceptionnellesLoading}
+        />
+      )
     }
 
     if (activePage === 'Dépenses') {
@@ -170,6 +187,9 @@ function AppContent() {
         interventions={interventions}
         interventionsError={interventionsError}
         interventionsLoading={interventionsLoading}
+        cotisationsExceptionnelles={cotisationsExceptionnelles}
+        cotisationsExceptionnellesError={cotisationsExceptionnellesError}
+        cotisationsExceptionnellesLoading={cotisationsExceptionnellesLoading}
       />
     )
   }

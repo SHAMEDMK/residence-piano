@@ -5,6 +5,7 @@ import { getSyndicPassword } from '../utils/finance'
 const navigationItems = [
   'Accueil',
   'Cotisations',
+  'Cotisations exceptionnelles',
   'Dépenses',
   'Annonces',
   'Contacts',

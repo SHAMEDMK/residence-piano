@@ -151,9 +151,33 @@ export function calculateTotalDepenses(depenses) {
   )
 }
 
-export function calculateSolde(cotisations, depenses) {
+export function calculateTotalCotisationsExceptionnellesPayees(
+  cotisationsExceptionnelles,
+) {
+  return cotisationsExceptionnelles.reduce((total, cotisationExceptionnelle) => {
+    const paidCount = Object.values(cotisationExceptionnelle.statuts ?? {}).filter(
+      (statut) => statut === 'paye',
+    ).length
+
+    return total + paidCount * Number(cotisationExceptionnelle.montant)
+  }, 0)
+}
+
+export function calculateTotalCotisationsExceptionnellesAttendues(
+  cotisationsExceptionnelles,
+  residentCount,
+) {
+  return cotisationsExceptionnelles.reduce(
+    (total, cotisationExceptionnelle) =>
+      total + residentCount * Number(cotisationExceptionnelle.montant),
+    0,
+  )
+}
+
+export function calculateSolde(cotisations, depenses, cotisationsExceptionnelles = []) {
   return (
-    countPaidCotisations(cotisations) * MONTANT_COTISATION -
+    countPaidCotisations(cotisations) * MONTANT_COTISATION +
+    calculateTotalCotisationsExceptionnellesPayees(cotisationsExceptionnelles) -
     calculateTotalDepenses(depenses)
   )
 }

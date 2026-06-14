@@ -1,13 +1,13 @@
 import useResidents from '../hooks/useResidents'
 import {
   calculateSolde,
-  countResidentsWithUnpaidCotisations,
+  calculateTotalCotisationsExceptionnellesAttendues,
+  calculateTotalCotisationsExceptionnellesPayees,
+  calculateTotalDepenses,
+  countPaidCotisations,
   formatMontant,
+  MONTANT_COTISATION,
 } from '../utils/finance'
-
-const nextMonthFormatter = new Intl.DateTimeFormat('fr-FR', {
-  month: 'long',
-})
 
 function CardIcon({ children }) {
   return (
@@ -74,7 +74,7 @@ function ReceiptIcon() {
   )
 }
 
-function AlertIcon() {
+function ExceptionalIcon() {
   return (
     <svg
       aria-hidden="true"
@@ -86,45 +86,10 @@ function AlertIcon() {
       strokeWidth="2"
       viewBox="0 0 24 24"
     >
-      <path d="M12 9v4" />
-      <path d="M12 17h.01" />
-      <path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+      <path d="M12 2v20" />
+      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" />
     </svg>
   )
-}
-
-function ToolsIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-    >
-      <path d="M14.7 6.3a4 4 0 0 0-5 5L3 18l3 3 6.7-6.7a4 4 0 0 0 5-5l-2.4 2.4-3-3 2.4-2.4Z" />
-    </svg>
-  )
-}
-
-function getNextPaymentDeadline(referenceDate = new Date()) {
-  const nextMonthDate = new Date(
-    referenceDate.getFullYear(),
-    referenceDate.getMonth() + 1,
-    1,
-  )
-  const month = nextMonthFormatter.format(nextMonthDate)
-
-  return `5 ${month.charAt(0).toUpperCase()}${month.slice(1)} 2026`
-}
-
-function getNextIntervention(interventions, referenceDate = new Date()) {
-  const today = referenceDate.toISOString().slice(0, 10)
-
-  return interventions.find((intervention) => intervention.date >= today) ?? null
 }
 
 function Accueil({
@@ -134,25 +99,45 @@ function Accueil({
   depenses,
   depensesError,
   depensesLoading,
-  interventions,
-  interventionsError,
-  interventionsLoading,
+  cotisationsExceptionnelles,
+  cotisationsExceptionnellesError,
+  cotisationsExceptionnellesLoading,
 }) {
   const {
     residents,
     loading: residentsLoading,
     error: residentsError,
   } = useResidents()
-  const solde = calculateSolde(cotisations, depenses)
-  const cashLoading = cotisationsLoading || depensesLoading
-  const cashError = cotisationsError ?? depensesError
-  const reminderLoading = cotisationsLoading || residentsLoading
-  const reminderError = cotisationsError ?? residentsError
-  const residentsWithUnpaidCotisations = countResidentsWithUnpaidCotisations(
-    residents,
+  const residentCount = residents.length || 9
+  const totalCotisationsMensuelles =
+    countPaidCotisations(cotisations) * MONTANT_COTISATION
+  const totalCotisationsExceptionnelles =
+    calculateTotalCotisationsExceptionnellesPayees(cotisationsExceptionnelles)
+  const totalCotisationsExceptionnellesAttendues =
+    calculateTotalCotisationsExceptionnellesAttendues(
+      cotisationsExceptionnelles,
+      residentCount,
+    )
+  const totalDepenses = calculateTotalDepenses(depenses)
+  const soldeApresDepenses = calculateSolde(
     cotisations,
+    depenses,
+    cotisationsExceptionnelles,
   )
-  const nextIntervention = getNextIntervention(interventions)
+  const cashLoading =
+    cotisationsLoading || cotisationsExceptionnellesLoading || depensesLoading
+  const cashError =
+    cotisationsError ?? cotisationsExceptionnellesError ?? depensesError
+  const exceptionalLoading = cotisationsExceptionnellesLoading || residentsLoading
+  const exceptionalError = cotisationsExceptionnellesError ?? residentsError
+  const exceptionalProgress =
+    totalCotisationsExceptionnellesAttendues > 0
+      ? Math.round(
+          (totalCotisationsExceptionnelles /
+            totalCotisationsExceptionnellesAttendues) *
+            100,
+        )
+      : 0
 
   return (
     <section className="w-full space-y-8">
@@ -171,7 +156,7 @@ function Accueil({
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
           <CardIcon>
             <WalletIcon />
@@ -184,11 +169,25 @@ function Accueil({
               ? 'Erreur'
               : cashLoading
                 ? 'Chargement...'
-                : formatMontant(solde)}
+                : formatMontant(soldeApresDepenses)}
           </p>
           <p className="mt-2 text-sm text-[#064E3B]/70">
-            Solde après cotisations payées et dépenses enregistrées.
+            Solde réel disponible après déduction des dépenses.
           </p>
+          {!cashError && !cashLoading ? (
+            <p
+              className="mt-3 text-xs font-medium leading-6 text-[#064E3B]/70"
+              title={`Mensuelles : ${formatMontant(
+                totalCotisationsMensuelles,
+              )} + Exceptionnelles : ${formatMontant(
+                totalCotisationsExceptionnelles,
+              )} - Dépenses : ${formatMontant(totalDepenses)}`}
+            >
+              Mensuelles : {formatMontant(totalCotisationsMensuelles)} +
+              Exceptionnelles : {formatMontant(totalCotisationsExceptionnelles)} -
+              Dépenses : {formatMontant(totalDepenses)}
+            </p>
+          ) : null}
         </article>
 
         <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
@@ -196,14 +195,53 @@ function Accueil({
             <CalendarIcon />
           </CardIcon>
           <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
-            Prochaine échéance
+            Cotisations mensuelles encaissées
           </p>
-          <p className="mt-4 text-2xl font-bold text-[#064E3B]">
-            {getNextPaymentDeadline()}
+          <p className="mt-4 text-3xl font-bold text-[#064E3B]">
+            {cotisationsError
+              ? 'Erreur'
+              : cotisationsLoading
+                ? 'Chargement...'
+                : formatMontant(totalCotisationsMensuelles)}
           </p>
           <p className="mt-2 text-sm text-[#064E3B]/70">
-            Date limite de paiement de la prochaine cotisation.
+            Cotisations payées × {formatMontant(MONTANT_COTISATION)}.
           </p>
+        </article>
+
+        <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
+          <CardIcon>
+            <ExceptionalIcon />
+          </CardIcon>
+          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
+            Cotisations exceptionnelles encaissées
+          </p>
+          {exceptionalError ? (
+            <p className="mt-4 text-sm font-medium text-red-600">
+              Impossible de charger les cotisations exceptionnelles.
+            </p>
+          ) : exceptionalLoading ? (
+            <p className="mt-4 text-sm text-[#064E3B]/70">Chargement...</p>
+          ) : (
+            <>
+              <p className="mt-4 text-3xl font-bold text-[#064E3B]">
+                {formatMontant(totalCotisationsExceptionnelles)}
+              </p>
+              <p className="mt-2 text-sm text-[#064E3B]/70">
+                {formatMontant(totalCotisationsExceptionnelles)} /{' '}
+                {formatMontant(totalCotisationsExceptionnellesAttendues)} attendus
+              </p>
+              <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#ECFDF5]">
+                <div
+                  className="h-full rounded-full bg-[#22C55E] transition-all"
+                  style={{ width: `${exceptionalProgress}%` }}
+                />
+              </div>
+              <p className="mt-2 text-xs font-semibold text-[#064E3B]/70">
+                {exceptionalProgress}% encaissé
+              </p>
+            </>
+          )}
         </article>
 
         <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
@@ -211,77 +249,18 @@ function Accueil({
             <ReceiptIcon />
           </CardIcon>
           <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
-            Dernière dépense
-          </p>
-          {depensesError ? (
-            <p className="mt-4 text-sm font-medium text-red-600">
-              Impossible de charger les dépenses.
-            </p>
-          ) : depensesLoading ? (
-            <p className="mt-4 text-sm text-[#064E3B]/70">Chargement...</p>
-          ) : depenses[0] ? (
-            <>
-              <h3 className="mt-4 text-lg font-bold text-[#064E3B]">
-                {depenses[0].motif}
-              </h3>
-              <p className="mt-2 text-2xl font-bold text-[#064E3B]">
-                {formatMontant(depenses[0].montant)}
-              </p>
-            </>
-          ) : (
-            <p className="mt-4 text-sm text-[#064E3B]/70">Aucune dépense enregistrée.</p>
-          )}
-        </article>
-
-        <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
-          <CardIcon>
-            <AlertIcon />
-          </CardIcon>
-          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
-            Rappel cotisations
+            Total dépenses
           </p>
           <p className="mt-4 text-3xl font-bold text-[#064E3B]">
-            {reminderError
+            {depensesError
               ? 'Erreur'
-              : reminderLoading
+              : depensesLoading
                 ? 'Chargement...'
-                : residentsWithUnpaidCotisations}
+                : formatMontant(totalDepenses)}
           </p>
           <p className="mt-2 text-sm text-[#064E3B]/70">
-            Appartement(s) avec au moins un mois impayé.
+            Total des sorties d'argent enregistrées.
           </p>
-        </article>
-
-        <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
-          <CardIcon>
-            <ToolsIcon />
-          </CardIcon>
-          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#059669]">
-            Prochaine intervention
-          </p>
-          {interventionsError ? (
-            <p className="mt-4 text-sm font-medium text-red-600">
-              Impossible de charger le calendrier.
-            </p>
-          ) : interventionsLoading ? (
-            <p className="mt-4 text-sm text-[#064E3B]/70">Chargement...</p>
-          ) : nextIntervention ? (
-            <>
-              <h3 className="mt-4 text-lg font-bold text-[#064E3B]">
-                {nextIntervention.titre}
-              </h3>
-              <p className="mt-2 text-sm font-semibold text-[#064E3B]">
-                {nextIntervention.date}
-              </p>
-              <p className="mt-2 text-sm text-[#064E3B]/70">
-                {nextIntervention.type}
-              </p>
-            </>
-          ) : (
-            <p className="mt-4 text-sm text-[#064E3B]/70">
-              Aucune intervention à venir.
-            </p>
-          )}
         </article>
       </div>
     </section>
