@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { db } from '../firebase'
+import { CATEGORIES_DEPENSES } from '../utils/finance'
 
 function normalizeDepense(documentSnapshot) {
   const data = documentSnapshot.data()
@@ -9,6 +10,9 @@ function normalizeDepense(documentSnapshot) {
     id: documentSnapshot.id,
     date: data.date,
     motif: data.motif,
+    categorie: CATEGORIES_DEPENSES.includes(data.categorie)
+      ? data.categorie
+      : 'Divers',
     montant: Number(data.montant),
     payeur: data.payeur,
     justificatif: data.justificatif ?? null,

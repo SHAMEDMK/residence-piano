@@ -2,8 +2,6 @@ import {
   collection,
   doc,
   getDocs,
-  limit,
-  query,
   writeBatch,
 } from 'firebase/firestore'
 import { db } from '../firebase'
@@ -18,6 +16,8 @@ const initialResidents = Array.from({ length: 9 }, (_, index) => {
     data: {
       nom: `Propriétaire Appt ${apartmentNumber}`,
       appartement: `Appartement ${apartmentNumber}`,
+      telephone: '',
+      email: '',
     },
   }
 })
@@ -29,9 +29,32 @@ export function seedResidents() {
 
   seedResidentsPromise = async function runSeedResidents() {
     const residentsRef = collection(db, 'residents')
-    const existingResidents = await getDocs(query(residentsRef, limit(1)))
+    const existingResidents = await getDocs(residentsRef)
 
     if (!existingResidents.empty) {
+      const batch = writeBatch(db)
+      let hasMissingContactFields = false
+
+      existingResidents.forEach((residentDocument) => {
+        const resident = residentDocument.data()
+
+        if (!('telephone' in resident) || !('email' in resident)) {
+          hasMissingContactFields = true
+          batch.set(
+            residentDocument.ref,
+            {
+              telephone: resident.telephone ?? '',
+              email: resident.email ?? '',
+            },
+            { merge: true },
+          )
+        }
+      })
+
+      if (hasMissingContactFields) {
+        await batch.commit()
+      }
+
       return
     }
 

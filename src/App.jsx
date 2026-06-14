@@ -2,21 +2,25 @@ import { useEffect, useState } from 'react'
 import Accueil from './components/Accueil'
 import AjoutAnnonce from './components/AjoutAnnonce'
 import AjoutDepense from './components/AjoutDepense'
+import Calendrier from './components/Calendrier'
+import Contacts from './components/Contacts'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import JournalDepenses from './components/JournalDepenses'
 import MurAnnonces from './components/MurAnnonces'
+import ParametresSyndic from './components/ParametresSyndic'
 import TableauCotisations from './components/TableauCotisations'
 import SyndicModeProvider from './context/SyndicModeProvider'
 import { seedResidents } from './data/seedResidents'
 import useAnnonces from './hooks/useAnnonces'
 import useCotisations from './hooks/useCotisations'
 import useDepenses from './hooks/useDepenses'
+import useInterventions from './hooks/useInterventions'
 import useSyndicMode from './hooks/useSyndicMode'
 
 function AppContent() {
   const [activePage, setActivePage] = useState('Accueil')
-  const { syndicMode } = useSyndicMode()
+  const { isSyndic, theme } = useSyndicMode()
   const {
     annonces,
     loading: annoncesLoading,
@@ -32,6 +36,11 @@ function AppContent() {
     loading: depensesLoading,
     error: depensesError,
   } = useDepenses()
+  const {
+    interventions,
+    loading: interventionsLoading,
+    error: interventionsError,
+  } = useInterventions()
 
   useEffect(() => {
     seedResidents().catch((seedError) => {
@@ -55,7 +64,13 @@ function AppContent() {
             depensesError={depensesError}
             depensesLoading={depensesLoading}
           />
-          <AjoutDepense />
+          {isSyndic ? (
+            <AjoutDepense />
+          ) : (
+            <aside className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+              Le formulaire d'ajout de dépense est réservé à l'accès Syndic.
+            </aside>
+          )}
         </section>
       )
     }
@@ -72,7 +87,7 @@ function AppContent() {
                 Informations aux résidents
               </h2>
               <p className="mt-2 text-sm text-slate-500">
-                Activez le mode Syndic depuis l'en-tête pour publier une annonce.
+                Connectez-vous en accès Syndic depuis l'en-tête pour publier une annonce.
               </p>
             </div>
           </div>
@@ -91,15 +106,35 @@ function AppContent() {
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
             <MurAnnonces annonces={annonces} />
-            {syndicMode ? (
+            {isSyndic ? (
               <AjoutAnnonce />
             ) : (
               <aside className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
-                Le formulaire de publication est réservé au mode Syndic.
+                Le formulaire de publication est réservé à l'accès Syndic.
               </aside>
             )}
           </div>
         </section>
+      )
+    }
+
+    if (activePage === 'Contacts') {
+      return (
+        <Contacts
+          cotisations={cotisations}
+          cotisationsError={cotisationsError}
+          cotisationsLoading={cotisationsLoading}
+        />
+      )
+    }
+
+    if (activePage === 'Calendrier') {
+      return (
+        <Calendrier
+          interventions={interventions}
+          interventionsError={interventionsError}
+          interventionsLoading={interventionsLoading}
+        />
       )
     }
 
@@ -111,16 +146,23 @@ function AppContent() {
         depenses={depenses}
         depensesError={depensesError}
         depensesLoading={depensesLoading}
+        interventions={interventions}
+        interventionsError={interventionsError}
+        interventionsLoading={interventionsLoading}
       />
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div
+      className="min-h-screen bg-slate-50 text-slate-900"
+      data-theme={theme}
+    >
       <Header activePage={activePage} onNavigate={setActivePage} />
 
-      <main className="mx-auto flex w-full max-w-7xl px-4 py-8 sm:px-6 lg:py-16">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:py-16">
         {renderPage()}
+        {isSyndic ? <ParametresSyndic /> : null}
       </main>
       <Footer />
     </div>

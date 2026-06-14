@@ -18,6 +18,8 @@ function normalizeResident(documentSnapshot) {
   return {
     id: residentId,
     ...data,
+    telephone: data.telephone ?? '',
+    email: data.email ?? '',
   }
 }
 

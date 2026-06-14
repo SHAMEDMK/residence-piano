@@ -2,11 +2,43 @@ export const MONTANT_COTISATION = 200
 export const DEVISE = 'DH'
 export const ANNEE_DEBUT = 2026
 export const MOIS_DEBUT = 5
+export const SYNDIC_PASSWORD = 'residencepiano2026'
+export const CATEGORIES_DEPENSES = [
+  'Ménage',
+  'Ascenseur',
+  'Réparations',
+  'Entretien',
+  'Divers',
+]
+export const TYPES_INTERVENTIONS = [
+  'Entretien ascenseur',
+  'Ménage',
+  'Réparation',
+  'Autre',
+]
+
+const SYNDIC_PASSWORD_STORAGE_KEY = 'residence-piano-syndic-password'
 
 const amountFormatter = new Intl.NumberFormat('fr-FR', {
   maximumFractionDigits: 2,
   minimumFractionDigits: 0,
 })
+
+export function getSyndicPassword() {
+  if (typeof window === 'undefined') {
+    return SYNDIC_PASSWORD
+  }
+
+  return window.localStorage.getItem(SYNDIC_PASSWORD_STORAGE_KEY) || SYNDIC_PASSWORD
+}
+
+export function setSyndicPassword(nouveauMotDePasse) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  window.localStorage.setItem(SYNDIC_PASSWORD_STORAGE_KEY, nouveauMotDePasse)
+}
 
 export function formatMontant(amount) {
   return `${amountFormatter.format(Number(amount))} ${DEVISE}`

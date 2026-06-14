@@ -93,6 +93,23 @@ function AlertIcon() {
   )
 }
 
+function ToolsIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-6 w-6"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path d="M14.7 6.3a4 4 0 0 0-5 5L3 18l3 3 6.7-6.7a4 4 0 0 0 5-5l-2.4 2.4-3-3 2.4-2.4Z" />
+    </svg>
+  )
+}
+
 function getNextPaymentDeadline(referenceDate = new Date()) {
   const nextMonthDate = new Date(
     referenceDate.getFullYear(),
@@ -104,6 +121,12 @@ function getNextPaymentDeadline(referenceDate = new Date()) {
   return `5 ${month.charAt(0).toUpperCase()}${month.slice(1)} 2026`
 }
 
+function getNextIntervention(interventions, referenceDate = new Date()) {
+  const today = referenceDate.toISOString().slice(0, 10)
+
+  return interventions.find((intervention) => intervention.date >= today) ?? null
+}
+
 function Accueil({
   cotisations,
   cotisationsError,
@@ -111,6 +134,9 @@ function Accueil({
   depenses,
   depensesError,
   depensesLoading,
+  interventions,
+  interventionsError,
+  interventionsLoading,
 }) {
   const {
     residents,
@@ -126,6 +152,7 @@ function Accueil({
     residents,
     cotisations,
   )
+  const nextIntervention = getNextIntervention(interventions)
 
   return (
     <section className="w-full space-y-8">
@@ -144,7 +171,7 @@ function Accueil({
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
         <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <CardIcon>
             <WalletIcon />
@@ -223,6 +250,38 @@ function Accueil({
           <p className="mt-2 text-sm text-slate-500">
             Appartement(s) avec au moins un mois impayé.
           </p>
+        </article>
+
+        <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <CardIcon>
+            <ToolsIcon />
+          </CardIcon>
+          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-[#aa3bff]">
+            Prochaine intervention
+          </p>
+          {interventionsError ? (
+            <p className="mt-4 text-sm font-medium text-red-600">
+              Impossible de charger le calendrier.
+            </p>
+          ) : interventionsLoading ? (
+            <p className="mt-4 text-sm text-slate-500">Chargement...</p>
+          ) : nextIntervention ? (
+            <>
+              <h3 className="mt-4 text-lg font-bold text-slate-950">
+                {nextIntervention.titre}
+              </h3>
+              <p className="mt-2 text-sm font-semibold text-[#2e0f44]">
+                {nextIntervention.date}
+              </p>
+              <p className="mt-2 text-sm text-slate-500">
+                {nextIntervention.type}
+              </p>
+            </>
+          ) : (
+            <p className="mt-4 text-sm text-slate-500">
+              Aucune intervention à venir.
+            </p>
+          )}
         </article>
       </div>
     </section>

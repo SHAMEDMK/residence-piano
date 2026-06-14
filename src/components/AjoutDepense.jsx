@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { addDoc, collection } from 'firebase/firestore'
 import { db } from '../firebase'
-import { DEVISE } from '../utils/finance'
+import { CATEGORIES_DEPENSES, DEVISE } from '../utils/finance'
 
 const initialFormValues = {
   motif: '',
+  categorie: CATEGORIES_DEPENSES[0],
   montant: '',
   payeur: '',
   justificatif: null,
@@ -47,6 +48,7 @@ function AjoutDepense() {
       await addDoc(collection(db, 'depenses'), {
         date: new Date().toISOString().slice(0, 10),
         motif: formValues.motif.trim(),
+        categorie: formValues.categorie,
         montant: Number(formValues.montant),
         payeur: formValues.payeur.trim(),
         justificatif: formValues.justificatif,
@@ -93,6 +95,28 @@ function AjoutDepense() {
             type="text"
             value={formValues.motif}
           />
+        </div>
+
+        <div>
+          <label
+            className="mb-2 block text-sm font-medium text-slate-700"
+            htmlFor="categorie"
+          >
+            Catégorie
+          </label>
+          <select
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#aa3bff] focus:ring-4 focus:ring-[#aa3bff]/20"
+            id="categorie"
+            onChange={(event) => updateField('categorie', event.target.value)}
+            required
+            value={formValues.categorie}
+          >
+            {CATEGORIES_DEPENSES.map((categorie) => (
+              <option key={categorie} value={categorie}>
+                {categorie}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
