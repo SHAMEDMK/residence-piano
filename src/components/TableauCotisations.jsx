@@ -370,20 +370,25 @@ function TableauCotisations() {
         </>
       ) : null}
 
-      <div className="mt-5 flex flex-wrap gap-4 text-sm text-[#064E3B]/75">
-        <span className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded-full bg-[#22C55E]" />
-          Payé
-        </span>
-        <span className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded-full bg-[#DC2626]" />
-          Impayé
-        </span>
-        <span className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded-full bg-[#D1D5DB]" />
-          Futur
-        </span>
-      </div>
+      <details className="mt-5 w-fit rounded-2xl border border-[#A7F3D0] bg-white px-4 py-3 text-sm text-[#064E3B]/75 shadow-sm">
+        <summary className="cursor-pointer font-semibold text-[#064E3B]">
+          Légende
+        </summary>
+        <div className="mt-3 flex flex-wrap gap-4">
+          <span className="flex items-center gap-2">
+            <span className="h-4 w-4 rounded-full bg-[#22C55E]" />
+            Payé
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="h-4 w-4 rounded-full bg-[#DC2626]" />
+            Impayé
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="h-4 w-4 rounded-full bg-[#D1D5DB]" />
+            Futur
+          </span>
+        </div>
+      </details>
 
       {selectedResident ? (
         <div

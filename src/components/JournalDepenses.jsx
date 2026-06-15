@@ -42,6 +42,7 @@ function JournalDepenses({
   onEdit,
 }) {
   const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES_FILTER)
+  const [areFiltersOpen, setAreFiltersOpen] = useState(false)
   const [pendingDeleteDepenseId, setPendingDeleteDepenseId] = useState(null)
   const [deletingDepenseId, setDeletingDepenseId] = useState(null)
   const [actionError, setActionError] = useState(null)
@@ -177,20 +178,38 @@ function JournalDepenses({
         </div>
       ) : null}
 
-      <div className="border-b border-[#A7F3D0]/50 p-6">
-        <p className="text-sm font-semibold text-[#064E3B]/80">
-          Filtrer par catégorie
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+      <div className="border-b border-[#A7F3D0]/50 px-6 py-4">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-[#064E3B]/80">
+            Catégorie : {selectedCategory}
+          </p>
+          <button
+            className="rounded-full bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#064E3B]/75 transition hover:bg-[#059669]/10 md:hidden"
+            onClick={() =>
+              setAreFiltersOpen((currentAreFiltersOpen) => !currentAreFiltersOpen)
+            }
+            type="button"
+          >
+            {areFiltersOpen ? 'Masquer' : 'Filtres'}
+          </button>
+        </div>
+        <div
+          className={`mt-3 flex flex-wrap gap-2 ${
+            areFiltersOpen ? 'flex' : 'hidden md:flex'
+          }`}
+        >
           {[ALL_CATEGORIES_FILTER, ...CATEGORIES_DEPENSES].map((categorie) => (
             <button
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                 selectedCategory === categorie
                   ? 'bg-[#059669] text-white shadow-sm'
                   : 'bg-[#ECFDF5] text-[#064E3B]/75 hover:bg-[#059669]/10 hover:text-[#047857]'
               }`}
               key={categorie}
-              onClick={() => setSelectedCategory(categorie)}
+              onClick={() => {
+                setSelectedCategory(categorie)
+                setAreFiltersOpen(false)
+              }}
               type="button"
             >
               {categorie}

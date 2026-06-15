@@ -411,10 +411,6 @@ function CotisationsExceptionnelles({
                     </p>
                   </div>
 
-                  <p className="mt-4 leading-7 text-[#064E3B]/75">
-                    {cotisationExceptionnelle.description}
-                  </p>
-
                   <div className="mt-5">
                     <div className="flex items-center justify-between gap-4 text-sm font-semibold text-[#064E3B]">
                       <span>
@@ -437,56 +433,6 @@ function CotisationsExceptionnelles({
                   >
                     Voir détails
                   </button>
-
-                  {isSyndic ? (
-                    <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-                      <button
-                        className="flex-1 rounded-xl bg-[#ECFDF5] px-4 py-3 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#059669]/10"
-                        onClick={() => startEditing(cotisationExceptionnelle)}
-                        type="button"
-                      >
-                        Modifier
-                      </button>
-                      <button
-                        className="flex-1 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 transition hover:bg-red-100"
-                        onClick={() =>
-                          setPendingDeleteCotisationId(cotisationExceptionnelle.id)
-                        }
-                        type="button"
-                      >
-                        Supprimer
-                      </button>
-                    </div>
-                  ) : null}
-
-                  {pendingDeleteCotisationId === cotisationExceptionnelle.id ? (
-                    <div className="mt-4 rounded-xl border border-red-100 bg-red-50 p-4">
-                      <p className="text-sm font-semibold text-red-700">
-                        Supprimer cette cotisation exceptionnelle ?
-                      </p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <button
-                          className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#064E3B]/75 transition hover:bg-[#ECFDF5]"
-                          onClick={() => setPendingDeleteCotisationId(null)}
-                          type="button"
-                        >
-                          Annuler
-                        </button>
-                        <button
-                          className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
-                          disabled={
-                            deletingCotisationId === cotisationExceptionnelle.id
-                          }
-                          onClick={() => confirmDelete(cotisationExceptionnelle.id)}
-                          type="button"
-                        >
-                          {deletingCotisationId === cotisationExceptionnelle.id
-                            ? 'Suppression...'
-                            : 'Confirmer'}
-                        </button>
-                      </div>
-                    </div>
-                  ) : null}
                 </article>
               )
             })
@@ -526,13 +472,38 @@ function CotisationsExceptionnelles({
                 </p>
               </div>
 
-              <button
-                className="rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#D1D5DB]"
-                onClick={() => setSelectedCotisationId(null)}
-                type="button"
-              >
-                Fermer
-              </button>
+              <div className="flex flex-wrap gap-2">
+                {isSyndic ? (
+                  <>
+                    <button
+                      className="rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#059669]/10"
+                      onClick={() => {
+                        startEditing(selectedCotisation)
+                        setSelectedCotisationId(null)
+                      }}
+                      type="button"
+                    >
+                      Modifier
+                    </button>
+                    <button
+                      className="rounded-full bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+                      onClick={() =>
+                        setPendingDeleteCotisationId(selectedCotisation.id)
+                      }
+                      type="button"
+                    >
+                      Supprimer
+                    </button>
+                  </>
+                ) : null}
+                <button
+                  className="rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#D1D5DB]"
+                  onClick={() => setSelectedCotisationId(null)}
+                  type="button"
+                >
+                  Fermer
+                </button>
+              </div>
             </div>
 
             {error ? (
@@ -540,6 +511,37 @@ function CotisationsExceptionnelles({
                 Impossible de mettre à jour le paiement : {error.message}
               </div>
             ) : null}
+
+            {pendingDeleteCotisationId === selectedCotisation.id ? (
+              <div className="mt-5 rounded-xl border border-red-100 bg-red-50 p-4">
+                <p className="text-sm font-semibold text-red-700">
+                  Supprimer cette cotisation exceptionnelle ?
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#064E3B]/75 transition hover:bg-[#ECFDF5]"
+                    onClick={() => setPendingDeleteCotisationId(null)}
+                    type="button"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
+                    disabled={deletingCotisationId === selectedCotisation.id}
+                    onClick={() => confirmDelete(selectedCotisation.id)}
+                    type="button"
+                  >
+                    {deletingCotisationId === selectedCotisation.id
+                      ? 'Suppression...'
+                      : 'Confirmer'}
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
+            <p className="mt-5 leading-7 text-[#064E3B]/75">
+              {selectedCotisation.description}
+            </p>
 
             <div className="mt-6 divide-y divide-[#A7F3D0]/50 rounded-2xl border border-[#A7F3D0]">
               {residents.map((resident) => {
