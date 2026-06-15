@@ -229,7 +229,7 @@ function Header({ activePage, onNavigate }) {
                 </label>
                 <input
                   autoFocus
-                  className="w-full rounded-xl border border-[#A7F3D0] px-4 py-3 text-sm outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
+                  className="w-full rounded-xl border border-[#A7F3D0] bg-white px-4 py-3 text-sm text-[#064E3B] outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
                   id="syndic-password"
                   onChange={(event) => {
                     setPassword(event.target.value)

@@ -1,13 +1,34 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 
+const requiredFirebaseEnvKeys = [
+  'VITE_FIREBASE_API_KEY',
+  'VITE_FIREBASE_AUTH_DOMAIN',
+  'VITE_FIREBASE_PROJECT_ID',
+  'VITE_FIREBASE_STORAGE_BUCKET',
+  'VITE_FIREBASE_MESSAGING_SENDER_ID',
+  'VITE_FIREBASE_APP_ID',
+]
+
+const missingFirebaseEnvKeys = requiredFirebaseEnvKeys.filter(
+  (envKey) => !import.meta.env[envKey],
+)
+
+if (missingFirebaseEnvKeys.length > 0) {
+  throw new Error(
+    `Configuration Firebase manquante : ${missingFirebaseEnvKeys.join(
+      ', ',
+    )}. Créez un fichier .env.local pour le développement ou configurez ces variables dans Vercel.`,
+  )
+}
+
 const firebaseConfig = {
-  apiKey: 'AIzaSyAoNCG7-TCDTxYRbaqQdekqt4trgpvp6Iw',
-  authDomain: 'residence-piano.firebaseapp.com',
-  projectId: 'residence-piano',
-  storageBucket: 'residence-piano.firebasestorage.app',
-  messagingSenderId: '16425908175',
-  appId: '1:16425908175:web:caf6f057159dbc7cd104ba',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
 const app = initializeApp(firebaseConfig)
