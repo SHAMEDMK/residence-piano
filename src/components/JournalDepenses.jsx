@@ -22,6 +22,7 @@ const ALL_CATEGORIES_FILTER = 'Toutes'
 const categoryBadgeStyles = {
   Ménage: 'bg-blue-50 text-blue-700 ring-blue-100',
   Ascenseur: 'bg-orange-50 text-orange-700 ring-orange-100',
+  'Électricité/eau': 'bg-cyan-50 text-cyan-700 ring-cyan-100',
   Réparations: 'bg-red-50 text-red-700 ring-red-100',
   Entretien: 'bg-emerald-50 text-emerald-700 ring-emerald-100',
   Divers: 'bg-[#ECFDF5] text-[#064E3B]/75 ring-slate-200',

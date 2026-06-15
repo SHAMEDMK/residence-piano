@@ -6,6 +6,7 @@ export const SYNDIC_PASSWORD = 'residencepiano2026'
 export const CATEGORIES_DEPENSES = [
   'Ménage',
   'Ascenseur',
+  'Électricité/eau',
   'Réparations',
   'Entretien',
   'Divers',
