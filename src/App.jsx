@@ -83,6 +83,9 @@ function AppContent() {
             cotisations={cotisations}
             cotisationsError={cotisationsError}
             cotisationsLoading={cotisationsLoading}
+            cotisationsExceptionnelles={cotisationsExceptionnelles}
+            cotisationsExceptionnellesError={cotisationsExceptionnellesError}
+            cotisationsExceptionnellesLoading={cotisationsExceptionnellesLoading}
             depenses={depenses}
             depensesError={depensesError}
             depensesLoading={depensesLoading}

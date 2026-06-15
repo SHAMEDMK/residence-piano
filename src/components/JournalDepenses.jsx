@@ -3,6 +3,7 @@ import { deleteDoc, doc } from 'firebase/firestore'
 import { db } from '../firebase'
 import {
   calculateSolde,
+  calculateTotalCotisationsExceptionnellesPayees,
   calculateTotalDepenses,
   countPaidCotisations,
   CATEGORIES_DEPENSES,
@@ -30,6 +31,9 @@ function JournalDepenses({
   cotisations,
   cotisationsError,
   cotisationsLoading,
+  cotisationsExceptionnelles,
+  cotisationsExceptionnellesError,
+  cotisationsExceptionnellesLoading,
   depenses,
   depensesError,
   depensesLoading,
@@ -48,9 +52,14 @@ function JournalDepenses({
     selectedCategory === ALL_CATEGORIES_FILTER
       ? sortedDepenses
       : sortedDepenses.filter((depense) => depense.categorie === selectedCategory)
-  const totalCotisations = countPaidCotisations(cotisations) * MONTANT_COTISATION
+  const totalCotisationsMensuelles =
+    countPaidCotisations(cotisations) * MONTANT_COTISATION
+  const totalCotisationsExceptionnelles =
+    calculateTotalCotisationsExceptionnellesPayees(cotisationsExceptionnelles)
+  const totalCotisations =
+    totalCotisationsMensuelles + totalCotisationsExceptionnelles
   const totalDepenses = calculateTotalDepenses(depenses)
-  const solde = calculateSolde(cotisations, depenses)
+  const solde = calculateSolde(cotisations, depenses, cotisationsExceptionnelles)
   const formatAmount = (amount, error, loading) => {
     if (error) {
       return 'Erreur'
@@ -62,8 +71,11 @@ function JournalDepenses({
 
     return formatMontant(amount)
   }
-  const soldeError = cotisationsError ?? depensesError
-  const soldeLoading = cotisationsLoading || depensesLoading
+  const cotisationsErrorMessage = cotisationsError ?? cotisationsExceptionnellesError
+  const cotisationsLoadingState =
+    cotisationsLoading || cotisationsExceptionnellesLoading
+  const soldeError = cotisationsErrorMessage ?? depensesError
+  const soldeLoading = cotisationsLoadingState || depensesLoading
 
   const showSuccessMessage = (message) => {
     if (successTimerRef.current) {
@@ -117,7 +129,14 @@ function JournalDepenses({
         <div className="rounded-xl bg-[#059669]/10 p-4">
           <p className="text-sm font-medium text-[#047857]">Cotisations encaissées</p>
           <p className="mt-2 text-2xl font-bold text-[#064E3B]">
-            {formatAmount(totalCotisations, cotisationsError, cotisationsLoading)}
+            {formatAmount(
+              totalCotisations,
+              cotisationsErrorMessage,
+              cotisationsLoadingState,
+            )}
+          </p>
+          <p className="mt-1 text-xs font-medium text-[#064E3B]/70">
+            Mensuelles + exceptionnelles
           </p>
         </div>
         <div className="rounded-xl bg-red-50 p-4">

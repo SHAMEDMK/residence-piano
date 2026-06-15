@@ -142,10 +142,7 @@ function Accueil({
   return (
     <section className="w-full space-y-8">
       <div className="rounded-2xl border border-[#A7F3D0] bg-white p-8 shadow-sm md:p-10">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
-          Gestion du syndic
-        </p>
-        <h2 className="mt-3 text-4xl font-bold tracking-tight text-[#064E3B] md:text-6xl">
+        <h2 className="text-4xl font-bold tracking-tight text-[#064E3B] md:text-6xl">
           Résidence Piano
         </h2>
         <p className="mt-3 text-xl font-semibold text-[#059669]">

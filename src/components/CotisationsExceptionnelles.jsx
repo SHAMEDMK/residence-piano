@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore'
 import { db } from '../firebase'
 import useResidents from '../hooks/useResidents'
 import useSyndicMode from '../hooks/useSyndicMode'
@@ -61,8 +68,11 @@ function CotisationsExceptionnelles({
   } = useResidents()
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [formValues, setFormValues] = useState(initialFormValues)
+  const [editingCotisation, setEditingCotisation] = useState(null)
   const [selectedCotisationId, setSelectedCotisationId] = useState(null)
+  const [pendingDeleteCotisationId, setPendingDeleteCotisationId] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [deletingCotisationId, setDeletingCotisationId] = useState(null)
   const [updatingPaymentId, setUpdatingPaymentId] = useState(null)
   const [error, setError] = useState(null)
   const selectedCotisation =
@@ -83,7 +93,21 @@ function CotisationsExceptionnelles({
 
   const resetForm = () => {
     setFormValues(initialFormValues)
+    setEditingCotisation(null)
     setIsFormOpen(false)
+    setError(null)
+  }
+
+  const startEditing = (cotisationExceptionnelle) => {
+    setEditingCotisation(cotisationExceptionnelle)
+    setFormValues({
+      titre: cotisationExceptionnelle.titre,
+      description: cotisationExceptionnelle.description,
+      montant: String(cotisationExceptionnelle.montant),
+      echeance: cotisationExceptionnelle.echeance,
+    })
+    setIsFormOpen(true)
+    setPendingDeleteCotisationId(null)
     setError(null)
   }
 
@@ -100,29 +124,64 @@ function CotisationsExceptionnelles({
     setSaving(true)
     setError(null)
 
-    const statuts = residents.reduce(
-      (nextStatuts, resident) => ({
-        ...nextStatuts,
-        [String(resident.id)]: 'impaye',
-      }),
-      {},
-    )
-
     try {
-      await addDoc(collection(db, 'cotisationsExceptionnelles'), {
+      const cotisationExceptionnelleData = {
         titre: formValues.titre.trim(),
         description: formValues.description.trim(),
         montant,
-        dateCreation: serverTimestamp(),
         echeance: formValues.echeance,
-        statuts,
-      })
+      }
+
+      if (editingCotisation) {
+        await updateDoc(
+          doc(db, 'cotisationsExceptionnelles', editingCotisation.id),
+          cotisationExceptionnelleData,
+        )
+      } else {
+        const statuts = residents.reduce(
+          (nextStatuts, resident) => ({
+            ...nextStatuts,
+            [String(resident.id)]: 'impaye',
+          }),
+          {},
+        )
+
+        await addDoc(collection(db, 'cotisationsExceptionnelles'), {
+          ...cotisationExceptionnelleData,
+          dateCreation: serverTimestamp(),
+          statuts,
+        })
+      }
 
       resetForm()
     } catch (submitError) {
       setError(submitError)
     } finally {
       setSaving(false)
+    }
+  }
+
+  const confirmDelete = async (cotisationExceptionnelleId) => {
+    setDeletingCotisationId(cotisationExceptionnelleId)
+    setError(null)
+
+    try {
+      await deleteDoc(
+        doc(db, 'cotisationsExceptionnelles', cotisationExceptionnelleId),
+      )
+      setPendingDeleteCotisationId(null)
+
+      if (selectedCotisationId === cotisationExceptionnelleId) {
+        setSelectedCotisationId(null)
+      }
+
+      if (editingCotisation?.id === cotisationExceptionnelleId) {
+        resetForm()
+      }
+    } catch (deleteError) {
+      setError(deleteError)
+    } finally {
+      setDeletingCotisationId(null)
     }
   }
 
@@ -170,7 +229,14 @@ function CotisationsExceptionnelles({
         {isSyndic ? (
           <button
             className="rounded-xl bg-[#059669] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#047857] focus:outline-none focus:ring-4 focus:ring-[#059669]/30"
-            onClick={() => setIsFormOpen((currentIsOpen) => !currentIsOpen)}
+            onClick={() => {
+              if (isFormOpen) {
+                resetForm()
+                return
+              }
+
+              setIsFormOpen(true)
+            }}
             type="button"
           >
             {isFormOpen
@@ -187,10 +253,12 @@ function CotisationsExceptionnelles({
         >
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
-              Nouvelle cotisation
+              {editingCotisation ? 'Modification' : 'Nouvelle cotisation'}
             </p>
             <h3 className="mt-2 text-xl font-bold text-[#064E3B]">
-              Créer un appel exceptionnel
+              {editingCotisation
+                ? 'Modifier la cotisation exceptionnelle'
+                : 'Créer un appel exceptionnel'}
             </h3>
           </div>
 
@@ -288,7 +356,11 @@ function CotisationsExceptionnelles({
               disabled={saving || residents.length === 0}
               type="submit"
             >
-              {saving ? 'Création...' : 'Créer la cotisation'}
+              {saving
+                ? 'Enregistrement...'
+                : editingCotisation
+                  ? 'Enregistrer les modifications'
+                  : 'Créer la cotisation'}
             </button>
           </div>
         </form>
@@ -297,6 +369,12 @@ function CotisationsExceptionnelles({
       {loadError ? (
         <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm font-medium text-red-700">
           Impossible de charger les cotisations exceptionnelles : {loadError.message}
+        </div>
+      ) : null}
+
+      {error && !isFormOpen && !selectedCotisation ? (
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm font-medium text-red-700">
+          Impossible de traiter la cotisation exceptionnelle : {error.message}
         </div>
       ) : null}
 
@@ -359,6 +437,56 @@ function CotisationsExceptionnelles({
                   >
                     Voir détails
                   </button>
+
+                  {isSyndic ? (
+                    <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                      <button
+                        className="flex-1 rounded-xl bg-[#ECFDF5] px-4 py-3 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#059669]/10"
+                        onClick={() => startEditing(cotisationExceptionnelle)}
+                        type="button"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        className="flex-1 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+                        onClick={() =>
+                          setPendingDeleteCotisationId(cotisationExceptionnelle.id)
+                        }
+                        type="button"
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  ) : null}
+
+                  {pendingDeleteCotisationId === cotisationExceptionnelle.id ? (
+                    <div className="mt-4 rounded-xl border border-red-100 bg-red-50 p-4">
+                      <p className="text-sm font-semibold text-red-700">
+                        Supprimer cette cotisation exceptionnelle ?
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                          className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#064E3B]/75 transition hover:bg-[#ECFDF5]"
+                          onClick={() => setPendingDeleteCotisationId(null)}
+                          type="button"
+                        >
+                          Annuler
+                        </button>
+                        <button
+                          className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
+                          disabled={
+                            deletingCotisationId === cotisationExceptionnelle.id
+                          }
+                          onClick={() => confirmDelete(cotisationExceptionnelle.id)}
+                          type="button"
+                        >
+                          {deletingCotisationId === cotisationExceptionnelle.id
+                            ? 'Suppression...'
+                            : 'Confirmer'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
                 </article>
               )
             })

@@ -221,14 +221,9 @@ function TableauCotisations() {
           </h2>
           <p className="mt-2 text-sm text-[#064E3B]/70">
             Cotisation mensuelle : {MONTANT_COTISATION} {DEVISE}.
-            Connectez-vous avec l'accès Syndic pour modifier les statuts payés
-            ou impayés.
           </p>
         </div>
 
-        <div className="rounded-full bg-[#059669]/10 px-4 py-3 text-sm font-semibold text-[#064E3B]">
-          Accès Syndic {isSyndic ? 'activé' : 'désactivé'}
-        </div>
       </div>
 
       {error ? (
