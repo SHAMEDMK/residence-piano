@@ -115,9 +115,6 @@ function AppContent() {
               <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
                 Annonces
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-[#064E3B]">
-                Informations aux résidents
-              </h2>
             </div>
           </div>
 

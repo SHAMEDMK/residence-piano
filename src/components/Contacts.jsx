@@ -36,10 +36,6 @@ function Contacts({ cotisations, cotisationsError, cotisationsLoading }) {
         <h2 className="mt-2 text-2xl font-bold text-[#064E3B]">
           Coordonnées des résidents
         </h2>
-        <p className="mt-2 text-sm text-[#064E3B]/70">
-          Retrouvez les contacts et le statut des cotisations de chaque
-          appartement.
-        </p>
       </div>
 
       {error ? (

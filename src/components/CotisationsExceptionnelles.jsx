@@ -218,12 +218,6 @@ function CotisationsExceptionnelles({
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
             Cotisations exceptionnelles
           </p>
-          <h2 className="mt-2 text-2xl font-bold text-[#064E3B]">
-            Suivi des appels ponctuels
-          </h2>
-          <p className="mt-2 text-sm text-[#064E3B]/70">
-            Gérez les paiements exceptionnels par appartement en temps réel.
-          </p>
         </div>
 
         {isSyndic ? (
@@ -448,15 +442,15 @@ function CotisationsExceptionnelles({
         <div
           aria-labelledby="cotisation-exceptionnelle-detail-title"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/50 px-4 py-8"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/50 px-4 py-4 md:py-6"
           onClick={() => setSelectedCotisationId(null)}
           role="dialog"
         >
           <div
-            className="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl"
+            className="max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5 shadow-xl md:max-h-[calc(100vh-3rem)]"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex flex-col gap-4 border-b border-[#A7F3D0]/50 pb-5 md:flex-row md:items-start md:justify-between">
+            <div className="flex flex-col gap-3 border-b border-[#A7F3D0]/50 pb-4 md:flex-row md:items-start md:justify-between">
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#059669]">
                   Suivi des paiements
@@ -472,11 +466,11 @@ function CotisationsExceptionnelles({
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 md:justify-end">
                 {isSyndic ? (
                   <>
                     <button
-                      className="rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#059669]/10"
+                      className="rounded-full bg-[#ECFDF5] px-3 py-2 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#059669]/10"
                       onClick={() => {
                         startEditing(selectedCotisation)
                         setSelectedCotisationId(null)
@@ -486,7 +480,7 @@ function CotisationsExceptionnelles({
                       Modifier
                     </button>
                     <button
-                      className="rounded-full bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+                      className="rounded-full bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
                       onClick={() =>
                         setPendingDeleteCotisationId(selectedCotisation.id)
                       }
@@ -497,7 +491,7 @@ function CotisationsExceptionnelles({
                   </>
                 ) : null}
                 <button
-                  className="rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#D1D5DB]"
+                  className="rounded-full bg-[#ECFDF5] px-3 py-2 text-sm font-semibold text-[#064E3B]/80 transition hover:bg-[#D1D5DB]"
                   onClick={() => setSelectedCotisationId(null)}
                   type="button"
                 >
@@ -539,11 +533,11 @@ function CotisationsExceptionnelles({
               </div>
             ) : null}
 
-            <p className="mt-5 leading-7 text-[#064E3B]/75">
+            <p className="mt-4 text-sm leading-6 text-[#064E3B]/75">
               {selectedCotisation.description}
             </p>
 
-            <div className="mt-6 divide-y divide-[#A7F3D0]/50 rounded-2xl border border-[#A7F3D0]">
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
               {residents.map((resident) => {
                 const status = getResidentStatus(selectedCotisation, resident.id)
                 const paymentId = `${selectedCotisation.id}_${resident.id}`
@@ -551,7 +545,7 @@ function CotisationsExceptionnelles({
 
                 return (
                   <div
-                    className="flex items-center justify-between gap-4 p-4"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-[#A7F3D0] px-3 py-2.5"
                     key={resident.id}
                   >
                     <div>
@@ -566,7 +560,7 @@ function CotisationsExceptionnelles({
                       aria-label={`${resident.appartement} : cotisation exceptionnelle ${
                         status === 'paye' ? 'payée' : 'impayée'
                       }`}
-                      className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-lg font-bold ring-4 transition ${statusStyles[status]} ${
+                      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-base font-bold ring-4 transition ${statusStyles[status]} ${
                         isSyndic && !isUpdating
                           ? 'cursor-pointer hover:scale-110 focus:outline-none focus:ring-[#059669]/30'
                           : 'cursor-default opacity-80'
@@ -584,8 +578,8 @@ function CotisationsExceptionnelles({
               })}
             </div>
 
-            <div className="mt-6 rounded-2xl bg-[#F0FDF4] p-5 text-center">
-              <p className="text-lg font-bold text-[#064E3B]">
+            <div className="mt-4 rounded-2xl bg-[#F0FDF4] p-4 text-center">
+              <p className="font-bold text-[#064E3B]">
                 {getPaidCount(selectedCotisation, residents)}/{residents.length || 9}{' '}
                 payé - Total perçu :{' '}
                 {formatMontant(

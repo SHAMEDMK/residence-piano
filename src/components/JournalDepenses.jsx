@@ -2,13 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { deleteDoc, doc } from 'firebase/firestore'
 import { db } from '../firebase'
 import {
-  calculateSolde,
-  calculateTotalCotisationsExceptionnellesPayees,
   calculateTotalDepenses,
-  countPaidCotisations,
   CATEGORIES_DEPENSES,
   formatMontant,
-  MONTANT_COTISATION,
 } from '../utils/finance'
 
 const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
@@ -29,12 +25,6 @@ const categoryBadgeStyles = {
 }
 
 function JournalDepenses({
-  cotisations,
-  cotisationsError,
-  cotisationsLoading,
-  cotisationsExceptionnelles,
-  cotisationsExceptionnellesError,
-  cotisationsExceptionnellesLoading,
   depenses,
   depensesError,
   depensesLoading,
@@ -54,14 +44,7 @@ function JournalDepenses({
     selectedCategory === ALL_CATEGORIES_FILTER
       ? sortedDepenses
       : sortedDepenses.filter((depense) => depense.categorie === selectedCategory)
-  const totalCotisationsMensuelles =
-    countPaidCotisations(cotisations) * MONTANT_COTISATION
-  const totalCotisationsExceptionnelles =
-    calculateTotalCotisationsExceptionnellesPayees(cotisationsExceptionnelles)
-  const totalCotisations =
-    totalCotisationsMensuelles + totalCotisationsExceptionnelles
   const totalDepenses = calculateTotalDepenses(depenses)
-  const solde = calculateSolde(cotisations, depenses, cotisationsExceptionnelles)
   const formatAmount = (amount, error, loading) => {
     if (error) {
       return 'Erreur'
@@ -73,11 +56,6 @@ function JournalDepenses({
 
     return formatMontant(amount)
   }
-  const cotisationsErrorMessage = cotisationsError ?? cotisationsExceptionnellesError
-  const cotisationsLoadingState =
-    cotisationsLoading || cotisationsExceptionnellesLoading
-  const soldeError = cotisationsErrorMessage ?? depensesError
-  const soldeLoading = cotisationsLoadingState || depensesLoading
 
   const showSuccessMessage = (message) => {
     if (successTimerRef.current) {
@@ -123,34 +101,15 @@ function JournalDepenses({
           Journal des dépenses
         </p>
         <h2 className="mt-2 text-2xl font-bold text-[#064E3B]">
-          Sorties d'argent de la copropriété
+          Détail
         </h2>
       </div>
 
-      <div className="grid gap-4 border-b border-[#A7F3D0]/50 p-6 md:grid-cols-3">
-        <div className="rounded-xl bg-[#059669]/10 p-4">
-          <p className="text-sm font-medium text-[#047857]">Cotisations encaissées</p>
-          <p className="mt-2 text-2xl font-bold text-[#064E3B]">
-            {formatAmount(
-              totalCotisations,
-              cotisationsErrorMessage,
-              cotisationsLoadingState,
-            )}
-          </p>
-          <p className="mt-1 text-xs font-medium text-[#064E3B]/70">
-            Mensuelles + exceptionnelles
-          </p>
-        </div>
+      <div className="grid gap-4 border-b border-[#A7F3D0]/50 p-6 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-xl bg-red-50 p-4">
           <p className="text-sm font-medium text-red-700">Dépenses totales</p>
           <p className="mt-2 text-2xl font-bold text-red-900">
             {formatAmount(totalDepenses, depensesError, depensesLoading)}
-          </p>
-        </div>
-        <div className="rounded-xl bg-emerald-50 p-4">
-          <p className="text-sm font-medium text-emerald-700">Solde actuel</p>
-          <p className="mt-2 text-2xl font-bold text-emerald-900">
-            {formatAmount(solde, soldeError, soldeLoading)}
           </p>
         </div>
       </div>
