@@ -7,6 +7,40 @@ function getTodayDateInputValue() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function normalizeJustificatifUrl(url) {
+  const trimmed = url.trim()
+
+  if (!trimmed) {
+    return null
+  }
+
+  try {
+    const parsed = new URL(trimmed)
+
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      throw new Error('Le lien doit commencer par http:// ou https://')
+    }
+
+    return parsed.href
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('http')) {
+      throw error
+    }
+
+    throw new Error('Lien de justificatif invalide.')
+  }
+}
+
+function getInitialJustificatifUrl(editingDepense) {
+  const justificatif = editingDepense?.justificatif
+
+  if (!justificatif || justificatif.startsWith('blob:')) {
+    return ''
+  }
+
+  return justificatif
+}
+
 function AjoutDepense({ editingDepense, onCancelEdit }) {
   const [successMessage, setSuccessMessage] = useState('')
   const successTimerRef = useRef(null)
@@ -65,7 +99,7 @@ function getInitialFormValues(editingDepense) {
     montant:
       editingDepense?.montant === undefined ? '' : String(editingDepense.montant),
     payeur: editingDepense?.payeur ?? '',
-    justificatif: editingDepense?.justificatif ?? null,
+    justificatif: getInitialJustificatifUrl(editingDepense),
   }
 }
 
@@ -73,22 +107,13 @@ function DepenseForm({ editingDepense, onCancelEdit, onSuccess }) {
   const [formValues, setFormValues] = useState(() =>
     getInitialFormValues(editingDepense),
   )
-  const [fileName, setFileName] = useState(
-    editingDepense?.justificatif ? 'Justificatif existant conservé' : '',
-  )
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
-  const fileInputRef = useRef(null)
 
   const resetForm = () => {
     setFormValues(getInitialFormValues(null))
-    setFileName('')
     setError(null)
     onCancelEdit?.()
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
   }
 
   const updateField = (field, value) => {
@@ -99,21 +124,6 @@ function DepenseForm({ editingDepense, onCancelEdit, onSuccess }) {
     setError(null)
   }
 
-  const handleFileChange = (event) => {
-    const file = event.target.files?.[0]
-
-    if (!file) {
-      if (!editingDepense) {
-        updateField('justificatif', null)
-        setFileName('')
-      }
-      return
-    }
-
-    updateField('justificatif', URL.createObjectURL(file))
-    setFileName(file.name)
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault()
     const form = event.currentTarget
@@ -121,16 +131,16 @@ function DepenseForm({ editingDepense, onCancelEdit, onSuccess }) {
     setSaving(true)
     setError(null)
 
-    const depenseData = {
-      date: formValues.date,
-      motif: formValues.motif.trim(),
-      categorie: formValues.categorie,
-      montant: Number(formValues.montant),
-      payeur: formValues.payeur.trim(),
-      justificatif: formValues.justificatif,
-    }
-
     try {
+      const depenseData = {
+        date: formValues.date,
+        motif: formValues.motif.trim(),
+        categorie: formValues.categorie,
+        montant: Number(formValues.montant),
+        payeur: formValues.payeur.trim(),
+        justificatif: normalizeJustificatifUrl(formValues.justificatif),
+      }
+
       if (editingDepense) {
         await updateDoc(doc(db, 'depenses', editingDepense.id), depenseData)
         onSuccess('Dépense modifiée avec succès.')
@@ -267,20 +277,21 @@ function DepenseForm({ editingDepense, onCancelEdit, onSuccess }) {
             className="mb-2 block text-sm font-medium text-[#064E3B]/80"
             htmlFor="justificatif"
           >
-            Justificatif
+            Lien du justificatif
           </label>
           <input
-            className="w-full rounded-xl border border-dashed border-[#A7F3D0] px-4 py-3 text-sm text-[#064E3B]/75 file:mr-4 file:rounded-full file:border-0 file:bg-[#059669]/10 file:px-4 file:py-2 file:text-sm file:font-medium file:text-[#047857] hover:file:bg-[#059669]/20"
+            className="w-full rounded-xl border border-[#A7F3D0] px-4 py-3 text-sm outline-none transition focus:border-[#059669] focus:ring-4 focus:ring-[#059669]/20"
             id="justificatif"
-            onChange={handleFileChange}
-            ref={fileInputRef}
-            type="file"
+            onChange={(event) => updateField('justificatif', event.target.value)}
+            placeholder="https://drive.google.com/..."
+            type="url"
+            value={formValues.justificatif}
           />
-          {fileName ? (
-            <p className="mt-2 text-xs text-[#064E3B]/70">
-              Fichier sélectionné : {fileName}
-            </p>
-          ) : null}
+          <p className="mt-2 text-xs text-[#064E3B]/70">
+            Déposez la facture sur Google Drive, Dropbox ou un autre service,
+            puis collez ici le lien de partage. Laissez vide si aucun
+            justificatif.
+          </p>
         </div>
 
         <div className="flex flex-col gap-3">
