@@ -5,7 +5,10 @@ import {
   calculateTotalDepenses,
   CATEGORIES_DEPENSES,
   formatMontant,
+  getCotisationPeriodLabel,
 } from '../utils/finance'
+
+const PERIODE_LABEL = getCotisationPeriodLabel()
 
 const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
   day: '2-digit',
@@ -103,6 +106,9 @@ function JournalDepenses({
         <h2 className="mt-2 text-2xl font-bold text-[#064E3B]">
           Détail
         </h2>
+        <p className="mt-2 text-sm text-[#064E3B]/70">
+          Période {PERIODE_LABEL}
+        </p>
       </div>
 
       <div className="grid gap-4 border-b border-[#A7F3D0]/50 p-6 sm:grid-cols-2 lg:grid-cols-3">

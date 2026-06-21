@@ -49,6 +49,16 @@ export function getCurrentCotisationYear(referenceDate = new Date()) {
   return referenceDate.getFullYear()
 }
 
+export function getCotisationPeriodLabel() {
+  const months = getCotisationPeriodMonths()
+  const first = months[0]
+  const last = months[months.length - 1]
+  const [firstMonthName] = first.label.split(' ')
+  const [lastMonthName] = last.label.split(' ')
+
+  return `${firstMonthName} ${first.annee} - ${lastMonthName} ${last.annee}`
+}
+
 export function getCotisationPeriodMonths() {
   return Array.from({ length: 12 }, (_, index) => {
     const monthIndex = MOIS_DEBUT - 1 + index

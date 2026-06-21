@@ -6,8 +6,11 @@ import {
   calculateTotalDepenses,
   countPaidCotisations,
   formatMontant,
+  getCotisationPeriodLabel,
   MONTANT_COTISATION,
 } from '../utils/finance'
+
+const PERIODE_LABEL = getCotisationPeriodLabel()
 
 function CardIcon({ children }) {
   return (
@@ -204,6 +207,9 @@ function Accueil({
           <p className="mt-2 text-sm text-[#064E3B]/70">
             Cotisations payées × {formatMontant(MONTANT_COTISATION)}.
           </p>
+          <p className="mt-2 text-sm text-[#064E3B]/70">
+            Période {PERIODE_LABEL}
+          </p>
         </article>
 
         <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
@@ -239,6 +245,9 @@ function Accueil({
               </p>
             </>
           )}
+          <p className="mt-2 text-sm text-[#064E3B]/70">
+            Période {PERIODE_LABEL}
+          </p>
         </article>
 
         <article className="rounded-2xl border border-[#A7F3D0] bg-white p-6 shadow-sm">
@@ -257,6 +266,9 @@ function Accueil({
           </p>
           <p className="mt-2 text-sm text-[#064E3B]/70">
             Total des sorties d'argent enregistrées.
+          </p>
+          <p className="mt-2 text-sm text-[#064E3B]/70">
+            Période {PERIODE_LABEL}
           </p>
         </article>
       </div>
