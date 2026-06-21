@@ -279,15 +279,15 @@ function TableauCotisations() {
                     const paidCount = getPaidCountForResident(resident.id)
 
                     return (
-                      <tr className="odd:bg-white even:bg-[#F0FDF4] hover:bg-[#A7F3D0]/25" key={resident.id}>
-                        <th className="px-3 py-3 text-left font-medium text-[#064E3B] md:px-5 md:py-4">
+                      <tr className="odd:bg-white odd:dark:bg-[#0d4a42] even:bg-[#F0FDF4] even:dark:bg-[#083832] hover:bg-[#A7F3D0]/25 dark:hover:bg-[#14b8a6]/20" key={resident.id}>
+                        <th className="px-3 py-3 text-left font-medium text-[#064E3B] dark:text-[#f0fdf4] md:px-5 md:py-4">
                           <button
-                            className="rounded-xl text-left transition hover:text-[#059669] focus:outline-none focus:ring-4 focus:ring-[#059669]/20"
+                            className="w-full rounded-xl text-left transition hover:text-[#059669] dark:text-[#f0fdf4] dark:hover:text-[#6ee7b7] focus:outline-none focus:ring-4 focus:ring-[#059669]/20"
                             onClick={() => openResidentHistory(resident)}
                             type="button"
                           >
-                            <span className="block">{resident.appartement}</span>
-                            <span className="mt-1 block text-[11px] font-normal text-[#064E3B]/70 md:text-xs">
+                            <span className="block font-medium">{resident.appartement}</span>
+                            <span className="mt-1 block text-[11px] font-normal text-[#064E3B]/70 dark:text-[#a7f3d0] md:text-xs">
                               {resident.nom}
                             </span>
                           </button>
@@ -329,7 +329,7 @@ function TableauCotisations() {
                           )
                         })}
 
-                        <td className="bg-[#F0FDF4] px-3 py-3 text-center text-xs font-semibold text-[#064E3B] md:px-5 md:py-4 md:text-sm">
+                        <td className="bg-[#F0FDF4] px-3 py-3 text-center text-xs font-semibold text-[#064E3B] dark:bg-[#083832] dark:text-[#f0fdf4] md:px-5 md:py-4 md:text-sm">
                           {paidCount} mois - {paidCount * MONTANT_COTISATION}{' '}
                           {DEVISE}
                         </td>
@@ -340,7 +340,7 @@ function TableauCotisations() {
 
                 <tfoot>
                   <tr className="border-t border-[#A7F3D0] bg-[#F0FDF4]">
-                    <th className="px-3 py-3 text-left font-bold text-[#064E3B] md:px-5 md:py-4">
+                    <th className="px-3 py-3 text-left font-bold text-[#064E3B] dark:text-[#f0fdf4] md:px-5 md:py-4">
                       Total perçu
                     </th>
                     {months.map((month) => {
@@ -348,14 +348,14 @@ function TableauCotisations() {
 
                       return (
                         <td
-                          className="px-2 py-3 text-center text-xs font-semibold text-[#064E3B] md:px-4 md:py-4 md:text-sm"
+                          className="px-2 py-3 text-center text-xs font-semibold text-[#064E3B] dark:text-[#f0fdf4] md:px-4 md:py-4 md:text-sm"
                           key={month.key}
                         >
                           {paidCount * MONTANT_COTISATION}
                         </td>
                       )
                     })}
-                    <td className="bg-[#A7F3D0] px-3 py-3 text-center text-xs font-bold text-[#064E3B] md:px-5 md:py-4 md:text-sm">
+                    <td className="bg-[#A7F3D0] px-3 py-3 text-center text-xs font-bold text-[#064E3B] dark:bg-[#115e59] dark:text-[#f0fdf4] md:px-5 md:py-4 md:text-sm">
                       {months.reduce(
                         (total, month) => total + getPaidCountForMonth(month),
                         0,

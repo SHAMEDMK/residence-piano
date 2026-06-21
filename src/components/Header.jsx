@@ -171,11 +171,11 @@ function Header({ activePage, onNavigate }) {
               {navigationItems.map((item) => (
                 <li key={item}>
                   <button
-                    className={`flex min-h-11 w-full items-center rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
-                      activePage === item
-                        ? 'bg-[#059669] text-white shadow-sm'
-                        : 'text-[#064E3B]/80 hover:bg-[#059669]/10 hover:text-[#047857]'
-                    }`}
+                      className={`flex min-h-11 w-full items-center rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
+                        activePage === item
+                          ? 'bg-[#059669] text-white shadow-sm'
+                          : 'text-[#064E3B]/80 hover:bg-[#059669]/10 hover:text-[#047857] dark:text-[#f0fdf4] dark:hover:text-[#6ee7b7]'
+                      }`}
                     onClick={() => handleNavigate(item)}
                     type="button"
                   >
